@@ -7,13 +7,15 @@ import com.r2d2.financeaccount.data.model.Account;
 import java.util.Set;
 
 public interface AccountService {
-    AccountDTO getAccountById(Long accountId);
+    Account getById(Long accountId);
 
-    Set<Account> getAccounts(Long personId);
+    Set<Account> getAll(Long personId);
 
-    AccountDTO saveOrUpdate(AccountDTO accountDTO);
+    Account create(Account newAccount);
 
-    AccountDTO update(Long personId, Long accountId);
+    Account saveOrUpdate(AccountDTO accountDTO);
+
+    Account update(Long personId, Long accountId);
 
     void delete(Long id);
 

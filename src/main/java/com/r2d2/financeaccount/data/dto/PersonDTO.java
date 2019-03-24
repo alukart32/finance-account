@@ -16,7 +16,9 @@ public class PersonDTO {
 
     private String userName;
 
-    private String fullName;
+    private String firstName;
+
+    private String secondName;
 
     private OffsetDateTime registerDate;
 

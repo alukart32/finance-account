@@ -48,7 +48,8 @@ public class PersonBootstrap implements ApplicationListener<ContextRefreshedEven
         OffsetDateTime test_offsetDateTime = OffsetDateTime.now();
 
         Person personTest = new Person();
-        personTest.setFullName("test user");
+        personTest.setFirstName("test");
+        personTest.setSecondName("user");
         personTest.setUserName("test userName");
         personTest.setRegisterDate(test_offsetDateTime);
         personTest.addAccounts(new Account(test_currency, "test account", "test", test_offsetDateTime, new BigDecimal(1)));

@@ -17,5 +17,8 @@ public class PersonNewDTO {
     private String userName;
 
     @Length(max = 128)
-    private String fullName;
+    private String firstName;
+
+    @Length(max = 128)
+    private String secondName;
 }

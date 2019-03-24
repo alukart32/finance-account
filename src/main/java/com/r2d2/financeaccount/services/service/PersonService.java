@@ -8,11 +8,13 @@ import java.util.Set;
 
 public interface PersonService {
 
-    Person getById(Long personId);
+    PersonDTO getById(Long personId);
 
-    Set<Person> getAll();
+    Set<PersonDTO> getAll();
 
-    Person create(Person newPerson);
+    PersonDTO create(PersonNewDTO newPerson);
+
+    PersonDTO update(Long personId, PersonNewDTO person);
 
     Person saveOrUpdate(Person person);
 
