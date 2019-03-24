@@ -4,6 +4,7 @@ import com.r2d2.financeaccount.data.dto.PersonDTO;
 import com.r2d2.financeaccount.data.dto.PersonNewDTO;
 import com.r2d2.financeaccount.data.model.Person;
 import com.r2d2.financeaccount.services.service.PersonService;
+import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,23 @@ public class PersonFacade {
         return convertPersonToPersonDTO(personService.create(convertPersonNewDTOToPerson(personDTO)));
     }
 
+    public PersonDTO update(String personId, PersonNewDTO personDTO){
+        Person person = personService.getById(Long.valueOf(personId));
+
+        if(person != null){
+            Person updatedPerson = convertPersonNewDTOToPerson(personDTO);
+
+            if(!person.getFullName().equals(updatedPerson.getFullName()))
+                person.setFullName(updatedPerson.getFullName());
+
+            if(!person.getUserName().equals(updatedPerson.getUserName()))
+                person.setUserName(updatedPerson.getUserName());
+        }
+
+        personService.saveOrUpdate(person);
+        return convertPersonToPersonDTO(person);
+    }
+
     private PersonDTO convertPersonToPersonDTO(Person person){
         PersonDTO personDTO = modelMapper.map(person, PersonDTO.class);
         return personDTO;
@@ -47,4 +65,5 @@ public class PersonFacade {
         Person person = modelMapper.map(personDto, Person.class);
         return person;
     }
+
 }

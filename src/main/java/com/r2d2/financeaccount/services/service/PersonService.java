@@ -14,9 +14,7 @@ public interface PersonService {
 
     Person create(Person newPerson);
 
-    PersonDTO saveOrUpdate(PersonDTO command);
-
-    PersonDTO update(Long personId);
+    Person saveOrUpdate(Person person);
 
     void delete(Long personId);
 }

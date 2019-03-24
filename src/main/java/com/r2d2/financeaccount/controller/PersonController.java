@@ -43,18 +43,12 @@ public class PersonController {
         return new ResponseEntity(person, HttpStatus.OK);
     }
 
-    /*
-    @RequestMapping(value = "/person/{personId}/update", method = RequestMethod.GET)
-    public String updateById(@PathVariable String personId, Model model) {
-        model.addAttribute("person", personRepository.findById(Long.valueOf(personId)));
-        return "/person/update-person";
+
+    @RequestMapping(value = "{personId}/update", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<PersonDTO> updateById(@Valid @RequestBody PersonNewDTO personDTO,
+                                                              @PathVariable String personId) {
+        PersonDTO person = personFacade.update(personId, personDTO);
+        return new ResponseEntity(person, HttpStatus.OK);
     }
 
-    @PostMapping
-    @RequestMapping("person")
-    public String saveOrUpdate(@ModelAttribute PersonCommand personCommand){
-        PersonCommand savedCommand = personService.saveOrUpdate(personCommand);
-        return "redirect:/person/"+savedCommand.getId()+"/show";
-    }
-    */
 }

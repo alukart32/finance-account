@@ -41,13 +41,9 @@ public class PersonServiceImpl  implements PersonService {
     }
 
     @Override
-    public PersonDTO saveOrUpdate(PersonDTO command) {
-        return null;
-    }
-
-    @Override
-    public PersonDTO update(Long personId) {
-        return null;
+    public Person saveOrUpdate(Person p) {
+        Person person = personRepository.save(p);
+        return person;
     }
 
     @Override
