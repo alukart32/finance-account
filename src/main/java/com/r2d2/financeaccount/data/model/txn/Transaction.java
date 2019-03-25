@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@EqualsAndHashCode(exclude = {"owner"})
+@EqualsAndHashCode(exclude = {"owner", "accountCurrency"})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Transaction {
     @Id

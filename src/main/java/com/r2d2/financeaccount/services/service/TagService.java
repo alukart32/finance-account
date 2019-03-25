@@ -6,13 +6,15 @@ import com.r2d2.financeaccount.data.model.Tag;
 import java.util.Set;
 
 public interface TagService {
-    TagDTO getById(Long id);
+    TagDTO getById(String currencyCode);
 
-    Set<Tag> getAll();
+    Set<TagDTO> getAll();
 
-    TagDTO saveOrUpdate(TagDTO tagDTO);
+    TagDTO create(TagDTO newTag);
 
-    TagDTO update(Long personId, Long tagId);
+    TagDTO update(Long tagId, TagDTO currency);
+
+    Tag saveOrUpdate(Tag tag);
 
     void delete(Long id);
 }

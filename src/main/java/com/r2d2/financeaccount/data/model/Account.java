@@ -9,15 +9,15 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Entity
-@EqualsAndHashCode(exclude = {"owner"})
+@EqualsAndHashCode(exclude = {"owner", "accountCurrency"})
 @Data
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Currency currency;
+    @ManyToOne
+    private Currency accountCurrency;
 
     @ManyToOne
     private Person owner;
@@ -26,7 +26,7 @@ public class Account {
 
     public Account(Currency currency, @Length(max = 256) String accountName, String description,
                    OffsetDateTime createDate, BigDecimal currentValue) {
-        this.currency = currency;
+        this.accountCurrency = currency;
         this.accountName = accountName;
         this.description = description;
         this.createDate = createDate;

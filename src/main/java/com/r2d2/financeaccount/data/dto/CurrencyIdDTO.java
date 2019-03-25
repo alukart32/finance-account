@@ -6,7 +6,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotEmpty;
 
 /**
- * When we need just code of currency
+ * When we need just code of accountCurrency
  */
 
 @Getter

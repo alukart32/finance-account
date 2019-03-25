@@ -1,17 +1,24 @@
 package com.r2d2.financeaccount.services.service;
 
 import com.r2d2.financeaccount.data.dto.CategoryDTO;
+import com.r2d2.financeaccount.data.dto.CategoryIdDTO;
 import com.r2d2.financeaccount.data.model.Category;
 
 import java.util.Set;
 
 public interface CategoryService {
+    CategoryDTO getById(Long categoryId);
 
-    CategoryDTO getById(Long id);
+    Set<CategoryDTO> getAll(Long personId);
 
-    Set<Category> getAll();
+    CategoryDTO create(CategoryDTO newCategory);
 
-    CategoryDTO saveOrUpdate(CategoryDTO categoryDTO);
+    void addCategory(Long personId, CategoryIdDTO categoryIdDTO);
 
-    CategoryDTO update(Long personId, Long categoryId);
+    Category saveOrUpdate(Category category);
+
+    CategoryDTO update(Long categoryId, CategoryDTO categoryDTO);
+
+    void delete(Long id);
+
 }

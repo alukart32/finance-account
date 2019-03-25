@@ -31,7 +31,7 @@ public class Person {
 
     private OffsetDateTime registerDate;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+    @OneToMany( mappedBy = "owner")
     private Set<Account> accounts = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")

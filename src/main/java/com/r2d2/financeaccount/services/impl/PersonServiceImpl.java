@@ -1,14 +1,20 @@
 package com.r2d2.financeaccount.services.impl;
 
+import com.r2d2.financeaccount.data.dto.AccountDTO;
+import com.r2d2.financeaccount.data.dto.AccountNewDTO;
 import com.r2d2.financeaccount.data.dto.PersonDTO;
 import com.r2d2.financeaccount.data.dto.PersonNewDTO;
+import com.r2d2.financeaccount.data.model.Account;
+import com.r2d2.financeaccount.data.model.Currency;
 import com.r2d2.financeaccount.data.model.Person;
+import com.r2d2.financeaccount.data.repository.CurrencyRepository;
 import com.r2d2.financeaccount.data.repository.PersonRepository;
 import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.services.service.PersonService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,10 +22,12 @@ import java.util.Set;
 @Service
 public class PersonServiceImpl  implements PersonService {
     PersonRepository personRepository;
+    CurrencyRepository currencyRepository;
     ModelMapper modelMapper;
 
-    public PersonServiceImpl(PersonRepository personRepository, ModelMapper modelMapper) {
+    public PersonServiceImpl(PersonRepository personRepository, CurrencyRepository currencyRepository, ModelMapper modelMapper) {
         this.personRepository = personRepository;
+        this.currencyRepository = currencyRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -32,7 +40,7 @@ public class PersonServiceImpl  implements PersonService {
 
     @Override
     public PersonDTO create(PersonNewDTO newPerson) {
-        final Person person = modelMapper.map(newPerson, Person.class);;
+        final Person person = modelMapper.map(newPerson, Person.class);
 
         person.setFirstName(newPerson.getFirstName());
         person.setSecondName(newPerson.getSecondName());
@@ -74,7 +82,6 @@ public class PersonServiceImpl  implements PersonService {
         return modelMapper.map(person, PersonDTO.class);
     }
 
-
     @Override
     public Person saveOrUpdate(Person p) {
         Person person = personRepository.save(p);
@@ -82,5 +89,7 @@ public class PersonServiceImpl  implements PersonService {
     }
 
     @Override
-    public void delete(Long personId) {}
+    public void delete(Long id) {
+        personRepository.deleteById(id);
+    }
 }

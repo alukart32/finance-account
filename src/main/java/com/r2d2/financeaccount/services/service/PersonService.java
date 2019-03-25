@@ -1,5 +1,7 @@
 package com.r2d2.financeaccount.services.service;
 
+import com.r2d2.financeaccount.data.dto.AccountDTO;
+import com.r2d2.financeaccount.data.dto.AccountNewDTO;
 import com.r2d2.financeaccount.data.dto.PersonDTO;
 import com.r2d2.financeaccount.data.dto.PersonNewDTO;
 import com.r2d2.financeaccount.data.model.Person;
@@ -18,5 +20,7 @@ public interface PersonService {
 
     Person saveOrUpdate(Person person);
 
-    void delete(Long personId);
+    void delete(Long id);
+
 }
+

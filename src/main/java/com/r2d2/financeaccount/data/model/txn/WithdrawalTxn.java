@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Data
-@EqualsAndHashCode(exclude = {"owner"})
+@EqualsAndHashCode(exclude = {"owner", "accountCurrency"})
 @Entity
 public class WithdrawalTxn extends Transaction {
     private BigDecimal amount;
