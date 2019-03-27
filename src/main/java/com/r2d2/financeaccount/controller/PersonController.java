@@ -55,17 +55,9 @@ public class PersonController {
 
     @RequestMapping(value = "createPerson", method = RequestMethod.POST)
     @ResponseStatus(CREATED)
-    public @ResponseBody ResponseEntity<PersonDTO> addPerson(@Valid @RequestBody PersonNewDTO personDTO){
+    public @ResponseBody ResponseEntity<PersonDTO> createPerson(@Valid @RequestBody PersonNewDTO personDTO){
         PersonDTO person = personService.create(personDTO);
         return new ResponseEntity(person, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "{personId}/addAccount", method = RequestMethod.POST)
-    @ResponseStatus(CREATED)
-    public @ResponseBody ResponseEntity<AccountDTO> addAccount(@Valid @RequestBody AccountNewDTO accountNewDTO
-                                                    , @PathVariable String personId){
-        AccountDTO account = accountService.addAccount(Long.valueOf(personId), accountNewDTO);
-        return new ResponseEntity(account, HttpStatus.OK);
     }
 
     @RequestMapping(value = "{personId}/update", method = RequestMethod.PUT)

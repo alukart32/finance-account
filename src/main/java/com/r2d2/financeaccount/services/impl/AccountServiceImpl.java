@@ -43,10 +43,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account getById(Long accountId) {
+    public AccountDTO getById(Long accountId) {
         Account account = accountRepository.findById(accountId).
                 orElseThrow(NotFoundException::new);
-        return account;
+        return modelMapper.map(account, AccountDTO.class);
     }
 
     @Override
@@ -57,7 +57,8 @@ public class AccountServiceImpl implements AccountService {
         Set<AccountDTO> accountsDTO = new HashSet<>();
 
         for (Account a : accounts) {
-            accountsDTO.add(modelMapper.map(a, AccountDTO.class));
+            if(a.getOwner().getId() == personId)
+                accountsDTO.add(modelMapper.map(a, AccountDTO.class));
         }
 
         return accountsDTO;
@@ -81,6 +82,8 @@ public class AccountServiceImpl implements AccountService {
         account.setAccountName(accountNewDTO.getName());
 
         Account savedAccount = saveOrUpdate(account);
+
+        currency.addAccounts(savedAccount);
 
         person.addAccounts(savedAccount);
         personService.saveOrUpdate(person);

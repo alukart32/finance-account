@@ -6,36 +6,26 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Data
 @EqualsAndHashCode(exclude = {"owner"})
 @Entity
 public class Tag {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @NotNull
     @Length(min = 1, max = 64)
     private String name;
 
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private Person owner;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Tag tag = (Tag) o;
-
-        return id != null ? id.equals(tag.id) : tag.id == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
 
     public Tag() {
     }

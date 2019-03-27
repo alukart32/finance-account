@@ -32,14 +32,11 @@ public class PersonBootstrap implements ApplicationListener<ContextRefreshedEven
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        personRepository.saveAll(getPersons());
+        setTestPerson();
         log.debug("PersonBootstrap is done");
     }
 
-    private Set<Person> getPersons() {
-
-        Set<Person> personSet = new HashSet<>(1);
-
+    private void setTestPerson() {
         Currency currency = new Currency();
         currency.setCode("tcr");
         currency.setHumanReadableName("testCurrency");
@@ -49,24 +46,31 @@ public class PersonBootstrap implements ApplicationListener<ContextRefreshedEven
         Account account = new Account(currency, "test account", "test",
                 test_offsetDateTime, BigDecimal.ZERO);
 
-        currency.addAccounts(account);
+        Tag tag = new Tag("testTag");
 
-        Currency savedCurrency = currencyRepository.save(currency);
-
-        accountRepository.save(account);
+        Category category = new Category("testCategory", "category test ");
 
         Person personTest = new Person();
         personTest.setFirstName("test");
         personTest.setSecondName("user");
         personTest.setUserName("test userName");
         personTest.setRegisterDate(test_offsetDateTime);
-        personTest.addAccounts(account);
-        personTest.addTags(new Tag("testTag"));
-        personTest.addCategories(new Category("testCategory", "category test "));
         personTest.setPassword("test");
 
-        personSet.add(personTest);
+        tag.setOwner(personTest);
+        personTest.addTags(tagRepository.save(tag));
 
-        return personSet;
+        category.setOwner(personTest);
+        personTest.addCategories(categoryRepository.save(category));
+
+        account.setOwner(personTest);
+        personTest.addAccounts(account);
+
+        personRepository.save(personTest);
+
+        currency.addAccounts(account);
+        currencyRepository.save(currency);
     }
+
+
 }
