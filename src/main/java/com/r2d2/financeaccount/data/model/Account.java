@@ -13,7 +13,7 @@ import java.time.OffsetDateTime;
 @Data
 public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -25,12 +25,12 @@ public class Account {
     public Account() {}
 
     public Account(Currency currency, @Length(max = 256) String accountName, String description,
-                   OffsetDateTime createDate, BigDecimal currentValue) {
+                   OffsetDateTime createDate, BigDecimal balance) {
         this.accountCurrency = currency;
         this.accountName = accountName;
         this.description = description;
         this.createDate = createDate;
-        this.currentValue = currentValue;
+        this.balance = balance;
     }
 
     @Length(max = 256)
@@ -41,5 +41,5 @@ public class Account {
 
     private OffsetDateTime createDate;
 
-    private BigDecimal currentValue;
+    private BigDecimal balance;
 }

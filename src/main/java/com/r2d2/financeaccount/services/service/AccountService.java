@@ -5,14 +5,13 @@ import com.r2d2.financeaccount.data.dto.AccountNewDTO;
 import com.r2d2.financeaccount.data.dto.TransactionDTO;
 import com.r2d2.financeaccount.data.model.Account;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 public interface AccountService {
     AccountDTO getById(Long accountId);
 
     Set<AccountDTO> getAll(Long personId);
-
-    //Account create(Account newAccount);
 
     AccountDTO addAccount(Long personId, AccountNewDTO accountNewDTO);
 

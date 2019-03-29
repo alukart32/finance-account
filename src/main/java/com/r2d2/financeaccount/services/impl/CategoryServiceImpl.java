@@ -1,7 +1,7 @@
 package com.r2d2.financeaccount.services.impl;
 
 import com.r2d2.financeaccount.data.dto.CategoryDTO;
-import com.r2d2.financeaccount.data.dto.CategoryIdDTO;
+import com.r2d2.financeaccount.data.dto.CategoryNewDTO;
 import com.r2d2.financeaccount.data.model.Category;
 import com.r2d2.financeaccount.data.model.Person;
 import com.r2d2.financeaccount.data.repository.CategoryRepository;
@@ -52,25 +52,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDTO create(CategoryDTO newCategory) {
-        final Category category = new Category();
-
-        category.setName(newCategory.getName());
-        category.setDescription(newCategory.getDescription());
-
+    public CategoryDTO create(CategoryNewDTO newCategory) {
+        final Category category =  modelMapper.map(newCategory, Category.class);
         Category savedCategory = saveOrUpdate(category);
-
         return modelMapper.map(savedCategory, CategoryDTO.class);
     }
 
     @Override
-    public void addCategory(Long personId, CategoryIdDTO categoryIdDTO) {
+    public void addCategory(Long personId, CategoryNewDTO categoryNewDTO) {
         Person person = modelMapper.map(personService.getById(personId), Person.class);
-
-        Category category = modelMapper.map(categoryRepository.findById(categoryIdDTO.getId()), Category.class);
+        Category category = modelMapper.map(categoryNewDTO, Category.class);
 
         person.addCategories(category);
-
         personService.saveOrUpdate(person);
     }
 

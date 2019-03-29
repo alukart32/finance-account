@@ -2,7 +2,6 @@ package com.r2d2.financeaccount.services.impl;
 
 import com.r2d2.financeaccount.data.dto.AccountDTO;
 import com.r2d2.financeaccount.data.dto.AccountNewDTO;
-import com.r2d2.financeaccount.data.dto.PersonDTO;
 import com.r2d2.financeaccount.data.dto.TransactionDTO;
 import com.r2d2.financeaccount.data.model.Account;
 import com.r2d2.financeaccount.data.model.Currency;
@@ -12,6 +11,7 @@ import com.r2d2.financeaccount.data.repository.CurrencyRepository;
 import com.r2d2.financeaccount.data.repository.PersonRepository;
 import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.services.service.AccountService;
+import com.r2d2.financeaccount.services.service.CurrencyService;
 import com.r2d2.financeaccount.services.service.PersonService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -25,19 +25,16 @@ import java.util.Set;
 public class AccountServiceImpl implements AccountService {
 
     AccountRepository accountRepository;
-    PersonRepository personRepository;
-    CurrencyRepository currencyRepository;
 
+    CurrencyService currencyService;
     PersonService personService;
 
     ModelMapper modelMapper;
 
-    public AccountServiceImpl(AccountRepository accountRepository, PersonRepository personRepository,
-                              CurrencyRepository currencyRepository, PersonService personService,
-                              ModelMapper modelMapper) {
+    public AccountServiceImpl(AccountRepository accountRepository, CurrencyService currencyService,
+                              PersonService personService, ModelMapper modelMapper) {
         this.accountRepository = accountRepository;
-        this.personRepository = personRepository;
-        this.currencyRepository = currencyRepository;
+        this.currencyService = currencyService;
         this.personService = personService;
         this.modelMapper = modelMapper;
     }
@@ -67,20 +64,14 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountDTO addAccount(Long personId, AccountNewDTO accountNewDTO) {
         Person person = modelMapper.map(personService.getById(personId), Person.class);
-        Account account = new Account();
 
+        Account account = modelMapper.map(accountNewDTO, Account.class);
         account.setOwner(person);
-        account.setCurrentValue(BigDecimal.ZERO);
+        account.setBalance(BigDecimal.ZERO);
 
-        Currency currency = currencyRepository.findByCode(accountNewDTO.getCurrency().getCode()).
-                orElseThrow(NotFoundException::new);
+        Currency currency = modelMapper.map(accountNewDTO.getCurrency(), Currency.class);
 
-        account.setAccountCurrency(currency);
         account.setCreateDate(OffsetDateTime.now());
-        account.setAccountName(accountNewDTO.getName());
-        account.setDescription(accountNewDTO.getDescription());
-        account.setAccountName(accountNewDTO.getName());
-
         Account savedAccount = saveOrUpdate(account);
 
         currency.addAccounts(savedAccount);
@@ -98,7 +89,45 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountDTO update(Long accountId, AccountNewDTO accountNewDTO) {
-        return null;
+        Account account = accountRepository.findById(accountId).
+                orElseThrow(NotFoundException::new);
+
+        Account updatedAccount = modelMapper.map(accountNewDTO, Account.class);
+
+        boolean updated = true;
+
+        if(!(updatedAccount.getAccountName() == null)) {
+            if (!account.getAccountName().equals(updatedAccount.getAccountName()))
+                if (!updatedAccount.getAccountName().isEmpty()) {
+                    account.setAccountName(updatedAccount.getAccountName());
+                    updated = false;
+                }
+        }
+
+        if(!(updatedAccount.getDescription() == null)) {
+            if (!account.getDescription().equals(updatedAccount.getDescription())) {
+                account.setAccountName(updatedAccount.getAccountName());
+                updated = false;
+            }
+        }
+
+        if(!(account.getAccountCurrency() == null)) {
+            if (!account.getAccountCurrency().equals(updatedAccount.getAccountCurrency())) {
+                Currency currency = modelMapper.map(currencyService.getById(accountNewDTO.getCurrency().getCode()),
+                        Currency.class);
+
+                account.setAccountCurrency(currency);
+                Account savedAccount = saveOrUpdate(account);
+
+                currency.addAccounts(savedAccount);
+                updated = false;
+            }
+        }
+
+        if(!updated)
+            saveOrUpdate(account);
+
+        return  modelMapper.map(account, AccountDTO.class);
     }
 
     @Override
@@ -108,6 +137,5 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void addTransaction(Long accountId, TransactionDTO txn) {
-
     }
 }

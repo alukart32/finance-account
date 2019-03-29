@@ -17,7 +17,7 @@ import java.util.Set;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
-@Controller
+@RestController
 @RequestMapping("/person/")
 public class PersonController {
 
@@ -35,33 +35,28 @@ public class PersonController {
         this.currencyService = currencyService;
     }
 
-    @RequestMapping("/showCurrency/{id}")
-    public @ResponseBody ResponseEntity<CurrencyDTO> showCurrency(@PathVariable String id){
-        CurrencyDTO currency = currencyService.getById(id);
-        return new ResponseEntity(currency, HttpStatus.OK);
-    }
-
+    /*
     @RequestMapping("/showAll")
-    public @ResponseBody ResponseEntity<Set<PersonDTO>> showPeople(){
+    public ResponseEntity<Set<PersonDTO>> showPeople(){
         Set<PersonDTO> people = personService.getAll();
         return new ResponseEntity(people, HttpStatus.OK);
-    }
+    }*/
 
     @RequestMapping("{personId}/show")
-    public @ResponseBody ResponseEntity<PersonDTO> showPerson(@PathVariable String personId){
+    public ResponseEntity<PersonDTO> showPerson(@PathVariable String personId){
         PersonDTO person = personService.getById(Long.valueOf(personId));
         return new ResponseEntity(person, HttpStatus.OK);
     }
 
     @RequestMapping(value = "createPerson", method = RequestMethod.POST)
     @ResponseStatus(CREATED)
-    public @ResponseBody ResponseEntity<PersonDTO> createPerson(@Valid @RequestBody PersonNewDTO personDTO){
+    public ResponseEntity<PersonDTO> createPerson(@Valid @RequestBody PersonNewDTO personDTO){
         PersonDTO person = personService.create(personDTO);
         return new ResponseEntity(person, HttpStatus.OK);
     }
 
     @RequestMapping(value = "{personId}/update", method = RequestMethod.PUT)
-    public @ResponseBody ResponseEntity<PersonDTO> update(@Valid @RequestBody PersonNewDTO personDTO,
+    public ResponseEntity<PersonDTO> update(@Valid @RequestBody PersonNewDTO personDTO,
                                                               @PathVariable String personId) {
         PersonDTO person = personService.update(Long.valueOf(personId), personDTO);
         return new ResponseEntity(person, HttpStatus.OK);

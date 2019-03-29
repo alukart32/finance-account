@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface AccountRepository extends CrudRepository<Account, Long> {
     @Override
-    Optional<Account> findById(Long aLong);
+    Optional<Account> findById(Long accountId);
 
     Optional<Account> findByOwnerId(Long personId);
 

@@ -1,11 +1,7 @@
 package com.r2d2.financeaccount.services.impl;
 
-import com.r2d2.financeaccount.data.dto.AccountDTO;
-import com.r2d2.financeaccount.data.dto.AccountNewDTO;
 import com.r2d2.financeaccount.data.dto.PersonDTO;
 import com.r2d2.financeaccount.data.dto.PersonNewDTO;
-import com.r2d2.financeaccount.data.model.Account;
-import com.r2d2.financeaccount.data.model.Currency;
 import com.r2d2.financeaccount.data.model.Person;
 import com.r2d2.financeaccount.data.repository.CurrencyRepository;
 import com.r2d2.financeaccount.data.repository.PersonRepository;
@@ -14,8 +10,6 @@ import com.r2d2.financeaccount.services.service.PersonService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,12 +35,6 @@ public class PersonServiceImpl  implements PersonService {
     @Override
     public PersonDTO create(PersonNewDTO newPerson) {
         final Person person = modelMapper.map(newPerson, Person.class);
-
-        person.setFirstName(newPerson.getFirstName());
-        person.setSecondName(newPerson.getSecondName());
-        person.setUserName(newPerson.getUserName());
-        person.setRegisterDate(OffsetDateTime.now());
-
         Person savedPerson = personRepository.save(person);
         return modelMapper.map(savedPerson, PersonDTO.class);
     }
@@ -77,7 +65,6 @@ public class PersonServiceImpl  implements PersonService {
             if(!person.getUserName().equals(updatedPerson.getUserName()))
                 person.setUserName(updatedPerson.getUserName());
         }
-
         saveOrUpdate(person);
         return modelMapper.map(person, PersonDTO.class);
     }

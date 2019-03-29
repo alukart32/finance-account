@@ -44,7 +44,7 @@ public class PersonBootstrap implements ApplicationListener<ContextRefreshedEven
         OffsetDateTime test_offsetDateTime = OffsetDateTime.now();
 
         Account account = new Account(currency, "test account", "test",
-                test_offsetDateTime, BigDecimal.ZERO);
+                test_offsetDateTime, new BigDecimal(100));
 
         Tag tag = new Tag("testTag");
 
