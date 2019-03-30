@@ -5,7 +5,6 @@ import com.r2d2.financeaccount.data.dto.AccountNewDTO;
 import com.r2d2.financeaccount.data.dto.TransactionDTO;
 import com.r2d2.financeaccount.data.model.Account;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 public interface AccountService {
@@ -20,6 +19,8 @@ public interface AccountService {
     Account saveOrUpdate(Account account);
 
     void delete(Long id);
+
+    void removeFrom(Long personId, Long accountId);
 
     void addTransaction(Long accountId, TransactionDTO txn);
 }

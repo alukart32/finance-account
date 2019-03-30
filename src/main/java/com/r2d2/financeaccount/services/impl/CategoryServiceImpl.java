@@ -59,13 +59,40 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void addCategory(Long personId, CategoryNewDTO categoryNewDTO) {
+    public CategoryDTO addCategory(Long personId, CategoryNewDTO categoryNewDTO) {
         Person person = modelMapper.map(personService.getById(personId), Person.class);
-        Category category = modelMapper.map(categoryNewDTO, Category.class);
 
-        person.addCategories(category);
-        personService.saveOrUpdate(person);
+        Category category = modelMapper.map(categoryNewDTO, Category.class);
+        category.setOwner(person);
+
+        Category savedCategory = saveOrUpdate(category);
+        personService.saveOrUpdate(person.addCategory(category));
+        return modelMapper.map(savedCategory, CategoryDTO.class);
     }
+
+    @Override
+    public CategoryDTO update(Long categoryId, CategoryNewDTO categoryNewDTO) {
+        Category category = categoryRepository.findById(categoryId).
+                orElseThrow(NotFoundException::new);
+
+        boolean updated = true;
+
+        if(!(category.getName().equals(categoryNewDTO.getName()))) {
+            category.setName(categoryNewDTO.getName());
+            updated = false;
+        }
+
+        if(!(category.getDescription().equals(categoryNewDTO.getDescription()))) {
+            category.setDescription(categoryNewDTO.getDescription());
+            updated = false;
+        }
+
+        if(!updated)
+            saveOrUpdate(category);
+
+        return modelMapper.map(category , CategoryDTO.class);
+    }
+
 
     @Override
     public Category saveOrUpdate(Category category) {
@@ -74,12 +101,22 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDTO update(Long categoryId, CategoryDTO categoryDTO) {
-        return null;
+    public void delete(Long id) {
+        categoryRepository.deleteById(id);
     }
 
     @Override
-    public void delete(Long id) {
-        categoryRepository.deleteById(id);
+    public void removeFrom(Long personId, Long categoryId) {
+        Person person = modelMapper.map(getById(personId), Person.class);
+
+        Category category = modelMapper.map(getById(categoryId), Category.class);
+        try {
+            /*if(person.removeCategory(category)){
+                delete(categoryId);
+                personService.saveOrUpdate(person);
+            }*/
+        }catch (Exception exp){
+            exp.getStackTrace();
+        }
     }
 }

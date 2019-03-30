@@ -21,10 +21,4 @@ public class PersonDTO {
     private String secondName;
 
     private OffsetDateTime registerDate;
-
-    private Set<CategoryDTO> categories = new HashSet<>();
-
-    private Set<AccountDTO> accounts = new HashSet<>();
-
-    private Set<TagDTO> tags = new HashSet<>();
 }

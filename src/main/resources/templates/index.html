@@ -1,14 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Without controller</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
 
-<div>
-    <p>Hello</p>
+<div id="start-msg">
+    <p>{{msg}}</p>
 </div>
 
+<div id="msgs">
+    <ul class="list-group">
+        <li class="list-group-item active" v-for="m in list_msg">{{m.text}}</li>
+    </ul>
+</div>
+
+<div id="user_in_1">
+    <p>{{msg}}</p>
+    <button v-on:click="reverseMsg">Перевернуть сообщение</button>
+</div>
+
+<script src="/js/index-page.js"></script>
 </body>
 </html>

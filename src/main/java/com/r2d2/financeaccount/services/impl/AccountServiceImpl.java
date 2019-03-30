@@ -7,8 +7,6 @@ import com.r2d2.financeaccount.data.model.Account;
 import com.r2d2.financeaccount.data.model.Currency;
 import com.r2d2.financeaccount.data.model.Person;
 import com.r2d2.financeaccount.data.repository.AccountRepository;
-import com.r2d2.financeaccount.data.repository.CurrencyRepository;
-import com.r2d2.financeaccount.data.repository.PersonRepository;
 import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.services.service.AccountService;
 import com.r2d2.financeaccount.services.service.CurrencyService;
@@ -68,17 +66,12 @@ public class AccountServiceImpl implements AccountService {
         Account account = modelMapper.map(accountNewDTO, Account.class);
         account.setOwner(person);
         account.setBalance(BigDecimal.ZERO);
-
-        Currency currency = modelMapper.map(accountNewDTO.getCurrency(), Currency.class);
-
         account.setCreateDate(OffsetDateTime.now());
-        Account savedAccount = saveOrUpdate(account);
 
-        currency.addAccounts(savedAccount);
-
-        person.addAccounts(savedAccount);
+        person = person.addAccount(account);
         personService.saveOrUpdate(person);
-        return modelMapper.map(savedAccount, AccountDTO.class);
+        Account savedAccount = saveOrUpdate(account);
+        return  modelMapper.map(savedAccount, AccountDTO.class);
     }
 
     @Override
@@ -111,28 +104,42 @@ public class AccountServiceImpl implements AccountService {
             }
         }
 
-        if(!(account.getAccountCurrency() == null)) {
-            if (!account.getAccountCurrency().equals(updatedAccount.getAccountCurrency())) {
+        if(!(account.getCurrency() == null)) {
+            if (!account.getCurrency().equals(updatedAccount.getCurrency())) {
                 Currency currency = modelMapper.map(currencyService.getById(accountNewDTO.getCurrency().getCode()),
                         Currency.class);
 
-                account.setAccountCurrency(currency);
+                account.setCurrency(currency);
                 Account savedAccount = saveOrUpdate(account);
 
-                currency.addAccounts(savedAccount);
                 updated = false;
             }
         }
 
         if(!updated)
             saveOrUpdate(account);
-
         return  modelMapper.map(account, AccountDTO.class);
     }
 
     @Override
     public void delete(Long id) {
-        accountRepository.deleteById(id);
+        if(accountRepository.existsById(id))
+            accountRepository.deleteById(id);
+    }
+
+    @Override
+    public void removeFrom(Long personId, Long accountId) {
+        Person person = modelMapper.map(personService.getById(personId), Person.class);
+
+        Account account = modelMapper.map(getById(accountId), Account.class);
+        try {
+            if(person.removeAccount(account)){
+                delete(accountId);
+                personService.saveOrUpdate(person);
+            }
+        }catch (Exception exp){
+            exp.getStackTrace();
+        }
     }
 
     @Override

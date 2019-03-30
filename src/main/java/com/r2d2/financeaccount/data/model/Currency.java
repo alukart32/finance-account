@@ -16,12 +16,4 @@ public class Currency {
     @Column(length = 40)
     private String humanReadableName;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "accountCurrency")
-    private Set<Account> accounts = new HashSet<>();
-
-    public Currency addAccounts(Account account) {
-        account.setAccountCurrency(this);
-        accounts.add(account);
-        return this;
-    }
 }

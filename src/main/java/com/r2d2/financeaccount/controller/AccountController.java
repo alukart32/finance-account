@@ -29,7 +29,7 @@ public class AccountController {
     }
 
     @RequestMapping("{accountId}/show")
-    public ResponseEntity<AccountDTO> showAccount(@PathVariable String accountId){
+    public ResponseEntity<AccountDTO> show(@PathVariable String accountId){
         AccountDTO account = accountService.getById(Long.valueOf(accountId));
         return new ResponseEntity(account, HttpStatus.OK);
     }

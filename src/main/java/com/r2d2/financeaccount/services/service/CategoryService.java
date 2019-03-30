@@ -13,12 +13,14 @@ public interface CategoryService {
 
     CategoryDTO create(CategoryNewDTO newCategory);
 
-    void addCategory(Long personId, CategoryNewDTO categoryNewDTO);
+    CategoryDTO addCategory(Long personId, CategoryNewDTO categoryNewDTO);
 
     Category saveOrUpdate(Category category);
 
-    CategoryDTO update(Long categoryId, CategoryDTO categoryDTO);
+    CategoryDTO update(Long categoryId, CategoryNewDTO categoryNewDTO);
 
     void delete(Long id);
+
+    void removeFrom(Long personId, Long categoryId);
 
 }

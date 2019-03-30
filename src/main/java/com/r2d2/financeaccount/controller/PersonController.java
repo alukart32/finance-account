@@ -35,14 +35,14 @@ public class PersonController {
         this.currencyService = currencyService;
     }
 
-    /*
+
     @RequestMapping("/showAll")
     public ResponseEntity<Set<PersonDTO>> showPeople(){
         Set<PersonDTO> people = personService.getAll();
         return new ResponseEntity(people, HttpStatus.OK);
-    }*/
+    }
 
-    @RequestMapping("{personId}/show")
+    @RequestMapping("/{personId}/show")
     public ResponseEntity<PersonDTO> showPerson(@PathVariable String personId){
         PersonDTO person = personService.getById(Long.valueOf(personId));
         return new ResponseEntity(person, HttpStatus.OK);
@@ -55,7 +55,7 @@ public class PersonController {
         return new ResponseEntity(person, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "{personId}/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{personId}/update", method = RequestMethod.PUT)
     public ResponseEntity<PersonDTO> update(@Valid @RequestBody PersonNewDTO personDTO,
                                                               @PathVariable String personId) {
         PersonDTO person = personService.update(Long.valueOf(personId), personDTO);

@@ -13,7 +13,7 @@ import java.util.Set;
 @Entity
 public class Person {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @NotNull
@@ -31,31 +31,52 @@ public class Person {
 
     private OffsetDateTime registerDate;
 
-    @OneToMany( mappedBy = "owner")
+    @OneToMany( mappedBy = "owner", fetch = FetchType.EAGER)
     private Set<Account> accounts = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+    @OneToMany( mappedBy = "owner",fetch = FetchType.EAGER)
     private Set<Category> categories = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+    @OneToMany( mappedBy = "owner",fetch = FetchType.EAGER)
     private Set<Tag> tags = new HashSet<>();
 
-    public Person addAccounts(Account account) {
+    public Person addAccount(Account account) {
         account.setOwner(this);
         accounts.add(account);
         return this;
     }
 
+    public boolean removeAccount(Account account){
+        if(!accounts.isEmpty()){
+            accounts.remove(account);
+            return true;
+        }
+        return false;
+    }
 
-    public Person addCategories(Category category) {
+    public Person addCategory(Category category) {
         category.setOwner(this);
         categories.add(category);
         return this;
     }
 
-    public Person addTags(Tag tag) {
+ /*   public boolean removeCategory(Category category){
+        if(!categories.isEmpty()){
+            categories.remove(category);
+            return true;
+        }
+        return  false;
+    }
+
+    public Tag addTag(Tag tag) {
         tag.setOwner(this);
         tags.add(tag);
-        return this;
+        return tag;
     }
+
+    public void removeTag(Tag tag){
+        if(!tags.isEmpty()){
+            tags.remove(tag);
+        }
+    }*/
 }

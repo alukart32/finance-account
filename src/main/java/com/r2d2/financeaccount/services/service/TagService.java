@@ -17,4 +17,6 @@ public interface TagService {
     Tag saveOrUpdate(Tag tag);
 
     void delete(Long id);
+
+    void removeFrom(Long personId, Long tagId);
 }

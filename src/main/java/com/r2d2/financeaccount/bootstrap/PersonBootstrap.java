@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Slf4j
 @Component
@@ -37,7 +35,7 @@ public class PersonBootstrap implements ApplicationListener<ContextRefreshedEven
     }
 
     private void setTestPerson() {
-        Currency currency = new Currency();
+        /*Currency currency = new Currency();
         currency.setCode("tcr");
         currency.setHumanReadableName("testCurrency");
 
@@ -57,20 +55,18 @@ public class PersonBootstrap implements ApplicationListener<ContextRefreshedEven
         personTest.setRegisterDate(test_offsetDateTime);
         personTest.setPassword("test");
 
-        tag.setOwner(personTest);
-        personTest.addTags(tagRepository.save(tag));
+        Tag addedTag = personTest.addTag(tag);
 
-        category.setOwner(personTest);
-        personTest.addCategories(categoryRepository.save(category));
+        Category addedCategory = personTest.addCategory(category);
 
-        account.setOwner(personTest);
-        personTest.addAccounts(account);
+        Account addedAccount = personTest.addAccount(account);
+
+        currency.addAccounts(addedAccount);
+        currencyRepository.save(currency);
 
         personRepository.save(personTest);
-
-        currency.addAccounts(account);
-        currencyRepository.save(currency);
+        tagRepository.save(tag);
+        categoryRepository.save(addedCategory);
+*/
     }
-
-
 }

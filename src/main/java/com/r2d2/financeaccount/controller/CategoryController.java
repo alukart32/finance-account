@@ -16,7 +16,7 @@ import java.util.Set;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
-@Controller
+@RestController
 @RequestMapping("/category/")
 public class CategoryController {
     CategoryService categoryService;
@@ -28,29 +28,36 @@ public class CategoryController {
     }
 
     @RequestMapping("showAllFor/{personId}")
-    public ResponseEntity<Set<CategoryDTO>> showCategories(@PathVariable String personId){
+    public ResponseEntity<Set<CategoryDTO>> showAll(@PathVariable String personId){
         Set<CategoryDTO> people = categoryService.getAll(Long.valueOf(personId));
         return new ResponseEntity(people, HttpStatus.OK);
     }
 
     @RequestMapping("{categoryId}/show")
-    public ResponseEntity<CategoryDTO> showCategory(@PathVariable String categoryId){
+    public ResponseEntity<CategoryDTO> show(@PathVariable String categoryId){
         CategoryDTO category = categoryService.getById(Long.valueOf(categoryId));
         return new ResponseEntity(category, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "create", method = RequestMethod.POST)
+    @RequestMapping(value = "addToPerson/{personId}", method = RequestMethod.POST)
     @ResponseStatus(CREATED)
-    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryNewDTO categoryDTO){
-        CategoryDTO category = categoryService.create(categoryDTO);
+    public ResponseEntity<CategoryDTO> addToPerson(@Valid @RequestBody CategoryNewDTO categoryDTO,
+                                                           @PathVariable String personId){
+        CategoryDTO category = categoryService.addCategory(Long.valueOf(personId), categoryDTO);
         return new ResponseEntity(category, HttpStatus.OK);
     }
 
-   /* @RequestMapping(value = "{personId}/update", method = RequestMethod.PUT)
-    public ResponseEntity<PersonDTO> update(@Valid @RequestBody PersonNewDTO personDTO,
-                                            @PathVariable String personId) {
-        PersonDTO person = personService.update(Long.valueOf(personId), personDTO);
-        return new ResponseEntity(person, HttpStatus.OK);
-    }*/
+    @RequestMapping(value = "{categoryId}/deleteFrom/{personId}", method = RequestMethod.DELETE)
+    public String removeFromPerson(@PathVariable String categoryId, @PathVariable String personId){
+        categoryService.removeFrom(Long.valueOf(personId), Long.valueOf(categoryId));
+        return "redirect:/category/showAllFor/" + personId;
+    }
+
+    @RequestMapping(value = "{categoryId}/update", method = RequestMethod.PUT)
+    public ResponseEntity<CategoryDTO> update(@Valid @RequestBody CategoryNewDTO categoryNewDTO,
+                                            @PathVariable String categoryId) {
+        CategoryDTO category = categoryService.update(Long.valueOf(categoryId), categoryNewDTO);
+        return new ResponseEntity(category, HttpStatus.OK);
+    }
 }
 

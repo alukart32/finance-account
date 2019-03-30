@@ -16,7 +16,7 @@ import java.util.TreeSet;
 @Entity
 public class Tag {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @NotNull
@@ -24,13 +24,13 @@ public class Tag {
     private String name;
 
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Person owner;
 
     public Tag() {
     }
 
-    public Tag(@NotNull @Length(min = 1, max = 64) String name) {
+    public Tag(String name) {
         this.name = name;
     }
 }
