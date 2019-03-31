@@ -31,13 +31,13 @@ public class Person {
 
     private OffsetDateTime registerDate;
 
-    @OneToMany( mappedBy = "owner", fetch = FetchType.EAGER)
+    @OneToMany( mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<Account> accounts = new HashSet<>();
 
-    @OneToMany( mappedBy = "owner",fetch = FetchType.EAGER)
+    @OneToMany( mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<Category> categories = new HashSet<>();
 
-    @OneToMany( mappedBy = "owner",fetch = FetchType.EAGER)
+    @OneToMany( mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<Tag> tags = new HashSet<>();
 
     public Person addAccount(Account account) {
@@ -46,12 +46,11 @@ public class Person {
         return this;
     }
 
-    public boolean removeAccount(Account account){
+    public Person removeAccount(Account account){
         if(!accounts.isEmpty()){
             accounts.remove(account);
-            return true;
         }
-        return false;
+        return this;
     }
 
     public Person addCategory(Category category) {

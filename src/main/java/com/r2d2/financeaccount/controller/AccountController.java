@@ -42,10 +42,16 @@ public class AccountController {
 
     @RequestMapping(value = "createAccountFor/{personId}", method = RequestMethod.POST)
     @ResponseStatus(CREATED)
-    public ResponseEntity<AccountDTO> addAccountToPerson(@Valid @RequestBody AccountNewDTO accountNewDTO,
+    public ResponseEntity<AccountDTO> addToPerson(@Valid @RequestBody AccountNewDTO accountNewDTO,
                                                 @PathVariable String personId){
         AccountDTO accountDTO = accountService.addAccount(Long.valueOf(personId), accountNewDTO);
         return new ResponseEntity(accountDTO, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "{accountId}/removeFrom/{personId}", method = RequestMethod.DELETE)
+    public String removeFromPerson(@PathVariable String accountId,@PathVariable String personId){
+        accountService.removeFrom( Long.valueOf(personId),Long.valueOf(accountId));
+        return "redirect:/account/showAccountsFor/" + personId;
     }
 
     @RequestMapping(value = "{accountId}/update", method = RequestMethod.PUT)

@@ -64,14 +64,14 @@ public class AccountServiceImpl implements AccountService {
         Person person = modelMapper.map(personService.getById(personId), Person.class);
 
         Account account = modelMapper.map(accountNewDTO, Account.class);
-        account.setOwner(person);
+        //account.setOwner(person);
         account.setBalance(BigDecimal.ZERO);
         account.setCreateDate(OffsetDateTime.now());
 
-        person = person.addAccount(account);
+        person.addAccount(account);
         personService.saveOrUpdate(person);
-        Account savedAccount = saveOrUpdate(account);
-        return  modelMapper.map(savedAccount, AccountDTO.class);
+        //saveOrUpdate(account);
+        return  modelMapper.map(account, AccountDTO.class);
     }
 
     @Override
@@ -133,10 +133,10 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = modelMapper.map(getById(accountId), Account.class);
         try {
-            if(person.removeAccount(account)){
+            person.removeAccount(account);
                 delete(accountId);
                 personService.saveOrUpdate(person);
-            }
+
         }catch (Exception exp){
             exp.getStackTrace();
         }
