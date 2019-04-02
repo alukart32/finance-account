@@ -1,16 +1,11 @@
 package com.r2d2.financeaccount.services.impl;
 
-import com.r2d2.financeaccount.data.dto.PersonDTO;
-import com.r2d2.financeaccount.data.dto.PersonNewDTO;
-import com.r2d2.financeaccount.data.model.Account;
-import com.r2d2.financeaccount.data.model.Category;
+import com.r2d2.financeaccount.data.dto.modelDTO.PersonDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.PersonNewDTO;
 import com.r2d2.financeaccount.data.model.Person;
 import com.r2d2.financeaccount.data.repository.PersonRepository;
 import com.r2d2.financeaccount.exception.NotFoundException;
-import com.r2d2.financeaccount.services.service.AccountService;
-import com.r2d2.financeaccount.services.service.CategoryService;
 import com.r2d2.financeaccount.services.service.PersonService;
-import com.r2d2.financeaccount.services.service.TagService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

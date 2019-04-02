@@ -1,7 +1,7 @@
 package com.r2d2.financeaccount.services.impl;
 
-import com.r2d2.financeaccount.data.dto.CategoryDTO;
-import com.r2d2.financeaccount.data.dto.CategoryNewDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.CategoryDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.CategoryNewDTO;
 import com.r2d2.financeaccount.data.model.Category;
 import com.r2d2.financeaccount.data.model.Person;
 import com.r2d2.financeaccount.data.repository.CategoryRepository;

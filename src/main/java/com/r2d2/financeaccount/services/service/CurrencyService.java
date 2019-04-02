@@ -1,7 +1,6 @@
 package com.r2d2.financeaccount.services.service;
 
-import com.r2d2.financeaccount.data.dto.CurrencyDTO;
-import com.r2d2.financeaccount.data.dto.CurrencyIdDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.CurrencyDTO;
 import com.r2d2.financeaccount.data.model.Currency;
 
 import java.util.Set;

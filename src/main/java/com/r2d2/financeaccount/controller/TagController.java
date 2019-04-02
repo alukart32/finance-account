@@ -1,13 +1,11 @@
 package com.r2d2.financeaccount.controller;
 
-import com.r2d2.financeaccount.data.dto.TagDTO;
-import com.r2d2.financeaccount.data.dto.TagNewDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.TagDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.TagNewDTO;
 import com.r2d2.financeaccount.services.service.PersonService;
 import com.r2d2.financeaccount.services.service.TagService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

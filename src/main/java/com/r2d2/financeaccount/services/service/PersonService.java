@@ -1,9 +1,7 @@
 package com.r2d2.financeaccount.services.service;
 
-import com.r2d2.financeaccount.data.dto.AccountDTO;
-import com.r2d2.financeaccount.data.dto.AccountNewDTO;
-import com.r2d2.financeaccount.data.dto.PersonDTO;
-import com.r2d2.financeaccount.data.dto.PersonNewDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.PersonDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.PersonNewDTO;
 import com.r2d2.financeaccount.data.model.Person;
 
 import java.util.Set;

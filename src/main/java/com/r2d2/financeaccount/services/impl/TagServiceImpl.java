@@ -1,7 +1,7 @@
 package com.r2d2.financeaccount.services.impl;
 
-import com.r2d2.financeaccount.data.dto.TagDTO;
-import com.r2d2.financeaccount.data.dto.TagNewDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.TagDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.TagNewDTO;
 import com.r2d2.financeaccount.data.model.Person;
 import com.r2d2.financeaccount.data.model.Tag;
 import com.r2d2.financeaccount.data.repository.TagRepository;

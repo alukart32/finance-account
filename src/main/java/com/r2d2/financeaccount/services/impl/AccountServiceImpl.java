@@ -1,9 +1,9 @@
 package com.r2d2.financeaccount.services.impl;
 
-import com.r2d2.financeaccount.data.dto.AccountDTO;
-import com.r2d2.financeaccount.data.dto.AccountNewDTO;
-import com.r2d2.financeaccount.data.dto.CurrencyDTO;
-import com.r2d2.financeaccount.data.dto.TransactionDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.AccountDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.AccountNewDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.CurrencyDTO;
+import com.r2d2.financeaccount.data.dto.txnDTO.TransactionDTO;
 import com.r2d2.financeaccount.data.model.Account;
 import com.r2d2.financeaccount.data.model.Currency;
 import com.r2d2.financeaccount.data.model.Person;

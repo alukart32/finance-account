@@ -1,14 +1,13 @@
 package com.r2d2.financeaccount.controller;
 
-import com.r2d2.financeaccount.data.dto.*;
-import com.r2d2.financeaccount.data.model.Currency;
+import com.r2d2.financeaccount.data.dto.modelDTO.PersonDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.PersonNewDTO;
 import com.r2d2.financeaccount.data.repository.PersonRepository;
 import com.r2d2.financeaccount.services.service.AccountService;
 import com.r2d2.financeaccount.services.service.CurrencyService;
 import com.r2d2.financeaccount.services.service.PersonService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

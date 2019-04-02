@@ -1,4 +1,4 @@
-package com.r2d2.financeaccount.data.dto;
+package com.r2d2.financeaccount.data.dto.modelDTO;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,7 +1,7 @@
 package com.r2d2.financeaccount.controller;
 
-import com.r2d2.financeaccount.data.dto.AccountDTO;
-import com.r2d2.financeaccount.data.dto.AccountNewDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.AccountDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.AccountNewDTO;
 import com.r2d2.financeaccount.services.service.AccountService;
 import com.r2d2.financeaccount.services.service.CurrencyService;
 import com.r2d2.financeaccount.services.service.PersonService;
