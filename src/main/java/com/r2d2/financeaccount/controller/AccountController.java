@@ -34,30 +34,30 @@ public class AccountController {
         return new ResponseEntity(account, HttpStatus.OK);
     }
 
-    @RequestMapping("showAccountsFor/{personId}")
-    public ResponseEntity<Set<AccountDTO>> showAccounts(@PathVariable String personId){
+    @RequestMapping("showAllFor/{personId}")
+    public ResponseEntity<Set<AccountDTO>> showAll(@PathVariable String personId){
         Set<AccountDTO> accounts = accountService.getAll(Long.valueOf(personId));
         return new ResponseEntity(accounts, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "createAccountFor/{personId}", method = RequestMethod.POST)
+    @RequestMapping(value = "addTo/{personId}", method = RequestMethod.POST)
     @ResponseStatus(CREATED)
-    public ResponseEntity<AccountDTO> addToPerson(@Valid @RequestBody AccountNewDTO accountNewDTO,
+    public String addTo(@Valid @RequestBody AccountNewDTO accountNewDTO,
                                                 @PathVariable String personId){
         AccountDTO accountDTO = accountService.addAccount(Long.valueOf(personId), accountNewDTO);
-        return new ResponseEntity(accountDTO, HttpStatus.OK);
+        return "redirect:/account/"+accountDTO.getId()+"/show";
     }
 
     @RequestMapping(value = "{accountId}/removeFrom/{personId}", method = RequestMethod.DELETE)
-    public String removeFromPerson(@PathVariable String accountId,@PathVariable String personId){
+    public String removeFrom(@PathVariable String accountId,@PathVariable String personId){
         accountService.removeFrom( Long.valueOf(personId),Long.valueOf(accountId));
-        return "redirect:/account/showAccountsFor/" + personId;
+        return "redirect:/account/showAllFor/" + personId;
     }
 
     @RequestMapping(value = "{accountId}/update", method = RequestMethod.PUT)
-    public ResponseEntity<AccountDTO> update(@RequestBody AccountNewDTO accountNewDTO,
+    public String update(@RequestBody AccountNewDTO accountNewDTO,
                                              @PathVariable Long accountId){
-        AccountDTO accountDTO = accountService.update(accountId, accountNewDTO);
-        return new ResponseEntity(accountDTO, HttpStatus.OK);
+        accountService.update(accountId, accountNewDTO);
+        return "redirect:/account/"+accountId+"/show";
     }
 }

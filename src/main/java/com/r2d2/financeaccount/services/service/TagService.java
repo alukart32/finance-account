@@ -1,18 +1,19 @@
 package com.r2d2.financeaccount.services.service;
 
 import com.r2d2.financeaccount.data.dto.TagDTO;
+import com.r2d2.financeaccount.data.dto.TagNewDTO;
 import com.r2d2.financeaccount.data.model.Tag;
 
 import java.util.Set;
 
 public interface TagService {
-    TagDTO getById(String currencyCode);
+    TagDTO getById(Long tagId);
 
-    Set<TagDTO> getAll();
+    Set<TagDTO> getAll(Long personId);
 
-    TagDTO create(TagDTO newTag);
+    TagDTO addTag(Long personId, TagNewDTO newTag);
 
-    TagDTO update(Long tagId, TagDTO currency);
+    TagDTO update(Long tagId, TagNewDTO tagDTO);
 
     Tag saveOrUpdate(Tag tag);
 

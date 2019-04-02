@@ -10,7 +10,5 @@ public interface AccountRepository extends CrudRepository<Account, Long> {
     @Override
     Optional<Account> findById(Long accountId);
 
-    Optional<Account> findByOwnerId(Long personId);
-
-    Optional<Account> findByDescription(String description);
+    Optional<Account> findByName(String name);
 }

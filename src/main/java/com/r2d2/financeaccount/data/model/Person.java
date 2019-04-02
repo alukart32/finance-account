@@ -31,13 +31,13 @@ public class Person {
 
     private OffsetDateTime registerDate;
 
-    @OneToMany( mappedBy = "owner", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "owner")
     private Set<Account> accounts = new HashSet<>();
 
-    @OneToMany( mappedBy = "owner", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<Category> categories = new HashSet<>();
 
-    @OneToMany( mappedBy = "owner", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<Tag> tags = new HashSet<>();
 
     public Person addAccount(Account account) {
@@ -46,8 +46,8 @@ public class Person {
         return this;
     }
 
-    public Person removeAccount(Account account){
-        if(!accounts.isEmpty()){
+    public Person removeAccount(Account account) {
+        if (!accounts.isEmpty()) {
             accounts.remove(account);
         }
         return this;
@@ -59,23 +59,23 @@ public class Person {
         return this;
     }
 
- /*   public boolean removeCategory(Category category){
-        if(!categories.isEmpty()){
+    public Person removeCategory(Category category) {
+        if (!categories.isEmpty()) {
             categories.remove(category);
-            return true;
         }
-        return  false;
+        return this;
     }
 
-    public Tag addTag(Tag tag) {
+    public Person addTag(Tag tag) {
         tag.setOwner(this);
         tags.add(tag);
-        return tag;
+        return this;
     }
 
-    public void removeTag(Tag tag){
-        if(!tags.isEmpty()){
+    public Person removeTag(Tag tag) {
+        if (!tags.isEmpty()) {
             tags.remove(tag);
         }
-    }*/
+        return this;
+    }
 }

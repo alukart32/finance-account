@@ -6,7 +6,6 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Lob;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter

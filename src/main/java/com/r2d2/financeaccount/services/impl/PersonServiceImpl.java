@@ -112,8 +112,7 @@ public class PersonServiceImpl  implements PersonService {
      */
     @Override
     public Person saveOrUpdate(Person p) {
-        Person person = personRepository.save(p);
-        return person;
+        return personRepository.save(p);
     }
 
     @Override
@@ -121,23 +120,4 @@ public class PersonServiceImpl  implements PersonService {
         personRepository.deleteById(id);
     }
 
-    /*@Override
-    public void removeCategory(Long personId, Long categoryId) {
-        Person person = modelMapper.map(getById(personId), Person.class);
-
-        Category category = modelMapper.map(accountService.getById(categoryId), Category.class);
-        try {
-            if(person.removeCategory(category)){
-                categoryService.delete(categoryId);
-                saveOrUpdate(person);
-            }
-        }catch (Exception exp){
-            exp.getStackTrace();
-        }
-    }
-
-    @Override
-    public void removeTag(Long personId, Long tagId) {
-
-    }*/
 }

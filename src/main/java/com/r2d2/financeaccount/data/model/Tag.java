@@ -23,12 +23,10 @@ public class Tag {
     @Length(min = 1, max = 64)
     private String name;
 
-
     @ManyToOne
     private Person owner;
 
-    public Tag() {
-    }
+    public Tag() {}
 
     public Tag(String name) {
         this.name = name;

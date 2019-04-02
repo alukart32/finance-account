@@ -19,5 +19,5 @@ public class AccountDTO {
 
     private OffsetDateTime createDate;
 
-    private BigDecimal currentValue;
+    private BigDecimal balance;
 }

@@ -24,17 +24,17 @@ public class Account {
 
     public Account() {}
 
-    public Account(Currency currency, @Length(max = 256) String accountName, String description,
+    public Account(Currency currency, @Length(max = 256) String name, String description,
                    OffsetDateTime createDate, BigDecimal balance) {
         this.currency = currency;
-        this.accountName = accountName;
+        this.name = name;
         this.description = description;
         this.createDate = createDate;
         this.balance = balance;
     }
 
     @Length(max = 256)
-    private String accountName;
+    private String name;
 
     @Lob
     private String description;

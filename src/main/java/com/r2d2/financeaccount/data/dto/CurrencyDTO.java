@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class CurrencyDTO {
-
+    @NotNull
     private String code;
 
     @NotNull

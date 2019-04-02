@@ -48,7 +48,7 @@ public class PersonController {
         return new ResponseEntity(person, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "createPerson", method = RequestMethod.POST)
+    @RequestMapping(value = "create", method = RequestMethod.POST)
     @ResponseStatus(CREATED)
     public ResponseEntity<PersonDTO> createPerson(@Valid @RequestBody PersonNewDTO personDTO){
         PersonDTO person = personService.create(personDTO);

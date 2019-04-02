@@ -55,6 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDTO create(CategoryNewDTO newCategory) {
         final Category category =  modelMapper.map(newCategory, Category.class);
         Category savedCategory = saveOrUpdate(category);
+
         return modelMapper.map(savedCategory, CategoryDTO.class);
     }
 
@@ -63,11 +64,18 @@ public class CategoryServiceImpl implements CategoryService {
         Person person = modelMapper.map(personService.getById(personId), Person.class);
 
         Category category = modelMapper.map(categoryNewDTO, Category.class);
-        category.setOwner(person);
 
-        Category savedCategory = saveOrUpdate(category);
+        if(categoryNewDTO.getName() != null) {
+            if(categoryRepository.count() > 0) {
+                Category categoryFromDb = categoryRepository.findByName(category.getName()).orElse(null);
+                if (categoryFromDb != null) {
+                    if (categoryFromDb.getDescription().equals(category.getDescription()))
+                        return modelMapper.map(categoryFromDb, CategoryDTO.class);
+                }
+            }
+        }
         personService.saveOrUpdate(person.addCategory(category));
-        return modelMapper.map(savedCategory, CategoryDTO.class);
+        return modelMapper.map(category, CategoryDTO.class);
     }
 
     @Override
@@ -96,8 +104,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category saveOrUpdate(Category category) {
-        Category c = categoryRepository.save(category);
-        return c;
+        return categoryRepository.save(category);
     }
 
     @Override
@@ -107,14 +114,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void removeFrom(Long personId, Long categoryId) {
-        Person person = modelMapper.map(getById(personId), Person.class);
+        Person person = modelMapper.map(personService.getById(personId), Person.class);
 
         Category category = modelMapper.map(getById(categoryId), Category.class);
         try {
-            /*if(person.removeCategory(category)){
-                delete(categoryId);
-                personService.saveOrUpdate(person);
-            }*/
+            person.removeCategory(category);
+            delete(categoryId);
+            personService.saveOrUpdate(person);
         }catch (Exception exp){
             exp.getStackTrace();
         }

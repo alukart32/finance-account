@@ -2,6 +2,7 @@ package com.r2d2.financeaccount.services.impl;
 
 import com.r2d2.financeaccount.data.dto.AccountDTO;
 import com.r2d2.financeaccount.data.dto.AccountNewDTO;
+import com.r2d2.financeaccount.data.dto.CurrencyDTO;
 import com.r2d2.financeaccount.data.dto.TransactionDTO;
 import com.r2d2.financeaccount.data.model.Account;
 import com.r2d2.financeaccount.data.model.Currency;
@@ -13,6 +14,7 @@ import com.r2d2.financeaccount.services.service.CurrencyService;
 import com.r2d2.financeaccount.services.service.PersonService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -21,7 +23,6 @@ import java.util.Set;
 
 @Service
 public class AccountServiceImpl implements AccountService {
-
     AccountRepository accountRepository;
 
     CurrencyService currencyService;
@@ -45,6 +46,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public CurrencyDTO getCurrency(Long accountId) {
+        return modelMapper.map(accountRepository.findById(accountId).get().getCurrency(), CurrencyDTO.class);
+    }
+
+    @Override
     public Set<AccountDTO> getAll(Long personId) {
         Set<Account> accounts = new HashSet<>();
         accountRepository.findAll().iterator().forEachRemaining(accounts::add);
@@ -60,26 +66,40 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public AccountDTO addAccount(Long personId, AccountNewDTO accountNewDTO) {
         Person person = modelMapper.map(personService.getById(personId), Person.class);
-
         Account account = modelMapper.map(accountNewDTO, Account.class);
-        //account.setOwner(person);
+
+        if(accountNewDTO.getName() != null & accountNewDTO.getCurrency() != null) {
+            if(accountRepository.count() > 0) {
+                Account accountFromDb = accountRepository.findByName(account.getName()).orElse(null);
+                if (accountFromDb != null) {
+                    if (accountFromDb.getName().equals(account.getName())
+                    & accountFromDb.getCurrency().equals(account.getCurrency()))
+                        return modelMapper.map(accountFromDb, AccountDTO.class);
+                }
+            }
+        }
         account.setBalance(BigDecimal.ZERO);
         account.setCreateDate(OffsetDateTime.now());
 
         person.addAccount(account);
         personService.saveOrUpdate(person);
-        //saveOrUpdate(account);
-        return  modelMapper.map(account, AccountDTO.class);
+        return modelMapper.map(saveOrUpdate(account), AccountDTO.class);
     }
 
-    @Override
-    public Account saveOrUpdate(Account account) {
-        Account a = accountRepository.save(account);
-        return a;
-    }
-
+    /**
+     * Updating account (name, description, currency)
+     *
+     * @param accountId
+     *        Target account
+     *
+     * @param accountNewDTO
+     *        Possible new data for account
+     *
+     * @return  updated account
+     */
     @Override
     public AccountDTO update(Long accountId, AccountNewDTO accountNewDTO) {
         Account account = accountRepository.findById(accountId).
@@ -89,22 +109,22 @@ public class AccountServiceImpl implements AccountService {
 
         boolean updated = true;
 
-        if(!(updatedAccount.getAccountName() == null)) {
-            if (!account.getAccountName().equals(updatedAccount.getAccountName()))
-                if (!updatedAccount.getAccountName().isEmpty()) {
-                    account.setAccountName(updatedAccount.getAccountName());
+        if(updatedAccount.getName() != null) {
+            if (!account.getName().equals(updatedAccount.getName()))
+                if (!updatedAccount.getName().isEmpty()) {
+                    account.setName(updatedAccount.getName());
                     updated = false;
                 }
         }
 
-        if(!(updatedAccount.getDescription() == null)) {
+        if(updatedAccount.getDescription() != null) {
             if (!account.getDescription().equals(updatedAccount.getDescription())) {
-                account.setAccountName(updatedAccount.getAccountName());
+                account.setName(updatedAccount.getName());
                 updated = false;
             }
         }
 
-        if(!(account.getCurrency() == null)) {
+        if(account.getCurrency() != null) {
             if (!account.getCurrency().equals(updatedAccount.getCurrency())) {
                 Currency currency = modelMapper.map(currencyService.getById(accountNewDTO.getCurrency().getCode()),
                         Currency.class);
@@ -127,19 +147,34 @@ public class AccountServiceImpl implements AccountService {
             accountRepository.deleteById(id);
     }
 
+    /**
+     * Remove(delete) account from person
+     *
+     * @param personId
+     *        Person who has this account
+     *
+     * @param accountId
+     *        Target account
+     */
     @Override
+    @Transactional
     public void removeFrom(Long personId, Long accountId) {
         Person person = modelMapper.map(personService.getById(personId), Person.class);
 
         Account account = modelMapper.map(getById(accountId), Account.class);
         try {
-            person.removeAccount(account);
+                person.removeAccount(account);
                 delete(accountId);
                 personService.saveOrUpdate(person);
-
         }catch (Exception exp){
             exp.getStackTrace();
         }
+    }
+
+    @Override
+    @Transactional
+    public Account saveOrUpdate(Account account) {
+        return accountRepository.save(account);
     }
 
     @Override
