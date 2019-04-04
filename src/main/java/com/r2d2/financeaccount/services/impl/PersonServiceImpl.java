@@ -1,5 +1,6 @@
 package com.r2d2.financeaccount.services.impl;
 
+import com.r2d2.financeaccount.mapper.OrikaMapper;
 import com.r2d2.financeaccount.data.dto.modelDTO.PersonDTO;
 import com.r2d2.financeaccount.data.dto.modelDTO.PersonNewDTO;
 import com.r2d2.financeaccount.data.model.Person;
@@ -7,7 +8,6 @@ import com.r2d2.financeaccount.data.repository.PersonRepository;
 import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.services.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -19,18 +19,18 @@ import java.util.Set;
 public class PersonServiceImpl  implements PersonService {
     PersonRepository personRepository;
 
-    ModelMapper modelMapper;
+    OrikaMapper mapper;
 
-    public PersonServiceImpl(PersonRepository personRepository, ModelMapper modelMapper) {
+    public PersonServiceImpl(PersonRepository personRepository, OrikaMapper mapper) {
         this.personRepository = personRepository;
-        this.modelMapper = modelMapper;
+        this.mapper = mapper;
     }
 
     @Override
     public PersonDTO getById(Long personId) {
         Person person = personRepository.findById(personId).
                 orElseThrow(NotFoundException::new);
-        return modelMapper.map(person, PersonDTO.class);
+        return mapper.map(person, PersonDTO.class);
     }
 
     /**
@@ -43,10 +43,10 @@ public class PersonServiceImpl  implements PersonService {
      */
     @Override
     public PersonDTO create(PersonNewDTO newPerson) {
-        final Person person = modelMapper.map(newPerson, Person.class);
+        final Person person = mapper.map(newPerson, Person.class);
         person.setRegisterDate(OffsetDateTime.now());
         Person savedPerson = personRepository.save(person);
-        return modelMapper.map(savedPerson, PersonDTO.class);
+        return mapper.map(savedPerson, PersonDTO.class);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class PersonServiceImpl  implements PersonService {
         Set<PersonDTO> peopleDTO = new HashSet<>();
 
         for (Person person: personRepository.findAll()) {
-            peopleDTO.add(modelMapper.map(person, PersonDTO.class));
+            peopleDTO.add(mapper.map(person, PersonDTO.class));
         }
         return peopleDTO;
     }
@@ -70,12 +70,12 @@ public class PersonServiceImpl  implements PersonService {
      */
     @Override
     public PersonDTO update(Long personId, PersonNewDTO personDTO){
-        Person person = modelMapper.map(getById(Long.valueOf(personId)), Person.class);
+        Person person = mapper.map(getById(Long.valueOf(personId)), Person.class);
 
         boolean updated = true;
 
         if(person != null){
-            Person updatedPerson = modelMapper.map(personDTO, Person.class);
+            Person updatedPerson = mapper.map(personDTO, Person.class);
 
             if(!person.getFirstName().equals(updatedPerson.getFirstName())) {
                 person.setFirstName((updatedPerson.getFirstName()));
@@ -95,7 +95,7 @@ public class PersonServiceImpl  implements PersonService {
 
         if(!updated)
             saveOrUpdate(person);
-        return modelMapper.map(person, PersonDTO.class);
+        return mapper.map(person, PersonDTO.class);
     }
 
     /**

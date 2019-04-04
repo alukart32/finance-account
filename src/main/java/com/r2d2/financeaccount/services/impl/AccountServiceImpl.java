@@ -1,18 +1,19 @@
 package com.r2d2.financeaccount.services.impl;
 
+import com.r2d2.financeaccount.mapper.OrikaMapper;
 import com.r2d2.financeaccount.data.dto.modelDTO.AccountDTO;
 import com.r2d2.financeaccount.data.dto.modelDTO.AccountNewDTO;
 import com.r2d2.financeaccount.data.dto.modelDTO.CurrencyDTO;
-import com.r2d2.financeaccount.data.dto.txnDTO.TransactionDTO;
 import com.r2d2.financeaccount.data.model.Account;
 import com.r2d2.financeaccount.data.model.Currency;
 import com.r2d2.financeaccount.data.model.Person;
 import com.r2d2.financeaccount.data.repository.AccountRepository;
+import com.r2d2.financeaccount.data.repository.TransactionRepository;
+import com.r2d2.financeaccount.exception.ApiException;
 import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.services.service.AccountService;
 import com.r2d2.financeaccount.services.service.CurrencyService;
 import com.r2d2.financeaccount.services.service.PersonService;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,56 +21,51 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
 
 @Service
 public class AccountServiceImpl implements AccountService {
     AccountRepository accountRepository;
+    TransactionRepository transactionRepository;
 
     CurrencyService currencyService;
     PersonService personService;
 
-    ModelMapper modelMapper;
+    OrikaMapper mapper;
 
-    public AccountServiceImpl(AccountRepository accountRepository, CurrencyService currencyService,
-                              PersonService personService, ModelMapper modelMapper) {
+    public AccountServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository,
+                              CurrencyService currencyService, PersonService personService, OrikaMapper mapper) {
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
         this.currencyService = currencyService;
         this.personService = personService;
-        this.modelMapper = modelMapper;
+        this.mapper = mapper;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AccountDTO getById(Long accountId) {
-        Account account = accountRepository.findById(accountId).
-                orElseThrow(NotFoundException::new);
-        return modelMapper.map(account, AccountDTO.class);
+        Account account = getAccount(accountId, false);
+        return mapper.map(account, AccountDTO.class);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CurrencyDTO getCurrency(Long accountId) {
-        return modelMapper.map(accountRepository.findById(accountId).get().getCurrency(), CurrencyDTO.class);
+        return mapper.map(accountRepository.findById(accountId).get().getCurrency(), CurrencyDTO.class);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Set<AccountDTO> getAll(Long personId) {
-        Set<Account> accounts = new HashSet<>();
-        accountRepository.findAll().iterator().forEachRemaining(accounts::add);
-
-        Set<AccountDTO> accountsDTO = new HashSet<>();
-
-        for (Account a : accounts) {
-            if(a.getOwner().getId() == personId)
-                accountsDTO.add(modelMapper.map(a, AccountDTO.class));
-        }
-
-        return accountsDTO;
+        return mapper.mapAsSet(accountRepository.findAll(), AccountDTO.class);
     }
 
     @Override
     @Transactional
     public AccountDTO addAccount(Long personId, AccountNewDTO accountNewDTO) {
-        Person person = modelMapper.map(personService.getById(personId), Person.class);
-        Account account = modelMapper.map(accountNewDTO, Account.class);
+        Person person = mapper.map(personService.getById(personId), Person.class);
+        Account account = mapper.map(accountNewDTO, Account.class);
 
         if(accountNewDTO.getName() != null & accountNewDTO.getCurrency() != null) {
             if(accountRepository.count() > 0) {
@@ -77,7 +73,7 @@ public class AccountServiceImpl implements AccountService {
                 if (accountFromDb != null) {
                     if (accountFromDb.getName().equals(account.getName())
                     & accountFromDb.getCurrency().equals(account.getCurrency()))
-                        return modelMapper.map(accountFromDb, AccountDTO.class);
+                        return mapper.map(accountFromDb, AccountDTO.class);
                 }
             }
         }
@@ -86,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
 
         person.addAccount(account);
         personService.saveOrUpdate(person);
-        return modelMapper.map(saveOrUpdate(account), AccountDTO.class);
+        return mapper.map(save(account), AccountDTO.class);
     }
 
     /**
@@ -102,10 +98,9 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public AccountDTO update(Long accountId, AccountNewDTO accountNewDTO) {
-        Account account = accountRepository.findById(accountId).
-                orElseThrow(NotFoundException::new);
+        Account account = getAccount(accountId);
 
-        Account updatedAccount = modelMapper.map(accountNewDTO, Account.class);
+        Account updatedAccount = mapper.map(accountNewDTO, Account.class);
 
         boolean updated = true;
 
@@ -126,19 +121,19 @@ public class AccountServiceImpl implements AccountService {
 
         if(account.getCurrency() != null) {
             if (!account.getCurrency().equals(updatedAccount.getCurrency())) {
-                Currency currency = modelMapper.map(currencyService.getById(accountNewDTO.getCurrency().getCode()),
+                Currency currency = mapper.map(currencyService.getById(accountNewDTO.getCurrency().getCode()),
                         Currency.class);
 
                 account.setCurrency(currency);
-                Account savedAccount = saveOrUpdate(account);
+                Account savedAccount = save(account);
 
                 updated = false;
             }
         }
 
         if(!updated)
-            saveOrUpdate(account);
-        return  modelMapper.map(account, AccountDTO.class);
+            save(account);
+        return  mapper.map(account, AccountDTO.class);
     }
 
     @Override
@@ -159,9 +154,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public void removeFrom(Long personId, Long accountId) {
-        Person person = modelMapper.map(personService.getById(personId), Person.class);
+        Person person = mapper.map(personService.getById(personId), Person.class);
 
-        Account account = modelMapper.map(getById(accountId), Account.class);
+        Account account = getAccount(accountId, false);
         try {
                 person.removeAccount(account);
                 delete(accountId);
@@ -172,12 +167,27 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional
-    public Account saveOrUpdate(Account account) {
+    public Account save(Account account) {
         return accountRepository.save(account);
     }
 
-    @Override
-    public void addTransaction(Long accountId, TransactionDTO txn) {
+    private Account getAccount(Long accountId) {
+        return getAccount(accountId, true);
+    }
+
+    private Account getAccount(Long accountId, boolean needLock) {
+        Account acc;
+        String msg = "No account found [id = " + accountId + "]";
+        if (needLock) {
+            acc = accountRepository.findByIdForUpdate(accountId).orElseThrow(notFound(msg));
+        } else {
+            acc = accountRepository.findById(accountId).orElseThrow(notFound(msg));
+        }
+        //ensureMine(acc);
+        return acc;
+    }
+
+    private Supplier<ApiException> notFound(String s) {
+        return () -> new NotFoundException(s);
     }
 }

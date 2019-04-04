@@ -25,38 +25,36 @@ public class TagController {
         this.personService = personService;
     }
 
-    @RequestMapping("{tagId}/show")
-    public ResponseEntity<TagDTO> show(@PathVariable String tagId){
-        TagDTO tagDTO = tagService.getById(Long.valueOf(tagId));
+    @RequestMapping("{id}/show")
+    public ResponseEntity<TagDTO> show(@PathVariable("id") Long tagId){
+        TagDTO tagDTO = tagService.getById(tagId);
         return new ResponseEntity(tagDTO, HttpStatus.OK);
     }
 
-    @RequestMapping("showFor/{personId}")
-    public ResponseEntity<Set<TagDTO>>showAllFor(@PathVariable String personId){
-        Set<TagDTO> tagDTOs = tagService.getAll(Long.valueOf(personId));
+    @RequestMapping("showFor/{id}")
+    public ResponseEntity<Set<TagDTO>>showAllFor(@PathVariable("id") Long personId){
+        Set<TagDTO> tagDTOs = tagService.getAll(personId);
         return new ResponseEntity(tagDTOs, HttpStatus.OK);
     }
 
 
-    @RequestMapping(value = "addTo/{personId}", method = RequestMethod.POST)
+    @RequestMapping(value = "addTo/{id}", method = RequestMethod.POST)
     @ResponseStatus(CREATED)
     public String addTo(@Valid @RequestBody TagNewDTO tagNewDTO,
-                        @PathVariable String personId){
-        tagService.addTag(Long.valueOf(personId), tagNewDTO);
+                        @PathVariable("id") Long personId){
+        tagService.addTag(personId, tagNewDTO);
         return "redirect:/category/showAllFor/"+personId;
     }
 
-    @RequestMapping(value = "{tagId}/removeFrom/{personId}", method = RequestMethod.DELETE)
-    public String removeFrom(@PathVariable String tagId, @PathVariable String personId){
-        tagService.removeFrom(Long.valueOf(personId), Long.valueOf(tagId));
+    @RequestMapping(value = "{id}/removeFrom/{personId}", method = RequestMethod.DELETE)
+    public String removeFrom(@PathVariable("id") Long tagId, @PathVariable Long personId){
+        tagService.removeFrom(personId, tagId);
         return "redirect:/category/showAllFor/" + personId;
     }
 
-    @RequestMapping("{tagId}/update")
-    public String update(@Valid @RequestBody TagNewDTO tagNewDTO, @PathVariable String tagId) {
-        tagService.update(Long.valueOf(tagId), tagNewDTO);
+    @RequestMapping("{id}/update")
+    public String update(@Valid @RequestBody TagNewDTO tagNewDTO, @PathVariable("id") Long tagId) {
+        tagService.update(tagId, tagNewDTO);
         return "redirect:/tag/"+tagId+"/show";
     }
-
-
 }

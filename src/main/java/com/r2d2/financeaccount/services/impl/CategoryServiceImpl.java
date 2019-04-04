@@ -1,5 +1,6 @@
 package com.r2d2.financeaccount.services.impl;
 
+import com.r2d2.financeaccount.mapper.OrikaMapper;
 import com.r2d2.financeaccount.data.dto.modelDTO.CategoryDTO;
 import com.r2d2.financeaccount.data.dto.modelDTO.CategoryNewDTO;
 import com.r2d2.financeaccount.data.model.Category;
@@ -8,7 +9,6 @@ import com.r2d2.financeaccount.data.repository.CategoryRepository;
 import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.services.service.CategoryService;
 import com.r2d2.financeaccount.services.service.PersonService;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -21,61 +21,52 @@ public class CategoryServiceImpl implements CategoryService {
 
     PersonService personService;
 
-    ModelMapper modelMapper;
+    OrikaMapper mapper;
 
     public CategoryServiceImpl(CategoryRepository categoryRepository, PersonService personService,
-                               ModelMapper modelMapper) {
+                               OrikaMapper mapper) {
         this.categoryRepository = categoryRepository;
         this.personService = personService;
-        this.modelMapper = modelMapper;
+        this.mapper = mapper;
     }
 
     @Override
     public CategoryDTO getById(Long categoryId) {
         Category category = categoryRepository.findById(categoryId).
                 orElseThrow(NotFoundException::new);
-        return modelMapper.map(category, CategoryDTO.class);
+        return mapper.map(category, CategoryDTO.class);
     }
 
     @Override
     public Set<CategoryDTO> getAll(Long personId) {
-        Set<Category> categories = new HashSet<>();
-        categoryRepository.findAll().iterator().forEachRemaining(categories::add);
-
-        Set<CategoryDTO> categoriesDTO = new HashSet<>();
-
-        for (Category c : categories) {
-            categoriesDTO.add(modelMapper.map(c, CategoryDTO.class));
-        }
-
-        return categoriesDTO;
+        return mapper.mapAsSet(categoryRepository.findAll(), CategoryDTO.class);
     }
 
     @Override
     public CategoryDTO create(CategoryNewDTO newCategory) {
-        final Category category =  modelMapper.map(newCategory, Category.class);
+        final Category category =  mapper.map(newCategory, Category.class);
         Category savedCategory = saveOrUpdate(category);
 
-        return modelMapper.map(savedCategory, CategoryDTO.class);
+        return mapper.map(savedCategory, CategoryDTO.class);
     }
 
     @Override
     public CategoryDTO addCategory(Long personId, CategoryNewDTO categoryNewDTO) {
-        Person person = modelMapper.map(personService.getById(personId), Person.class);
+        Person person = mapper.map(personService.getById(personId), Person.class);
 
-        Category category = modelMapper.map(categoryNewDTO, Category.class);
+        Category category = mapper.map(categoryNewDTO, Category.class);
 
         if(categoryNewDTO.getName() != null) {
             if(categoryRepository.count() > 0) {
                 Category categoryFromDb = categoryRepository.findByName(category.getName()).orElse(null);
                 if (categoryFromDb != null) {
                     if (categoryFromDb.getDescription().equals(category.getDescription()))
-                        return modelMapper.map(categoryFromDb, CategoryDTO.class);
+                        return mapper.map(categoryFromDb, CategoryDTO.class);
                 }
             }
         }
         personService.saveOrUpdate(person.addCategory(category));
-        return modelMapper.map(category, CategoryDTO.class);
+        return mapper.map(category, CategoryDTO.class);
     }
 
     @Override
@@ -98,7 +89,7 @@ public class CategoryServiceImpl implements CategoryService {
         if(!updated)
             saveOrUpdate(category);
 
-        return modelMapper.map(category , CategoryDTO.class);
+        return mapper.map(category , CategoryDTO.class);
     }
 
 
@@ -114,9 +105,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void removeFrom(Long personId, Long categoryId) {
-        Person person = modelMapper.map(personService.getById(personId), Person.class);
+        Person person = mapper.map(personService.getById(personId), Person.class);
 
-        Category category = modelMapper.map(getById(categoryId), Category.class);
+        Category category = mapper.map(getById(categoryId), Category.class);
         try {
             person.removeCategory(category);
             delete(categoryId);

@@ -21,9 +21,9 @@ public class CurrencyController {
         this.personService = personService;
     }
 
-    @RequestMapping("showFor/{accountId}")
-    public ResponseEntity<CurrencyDTO> showFor(@PathVariable String accountId) {
-        CurrencyDTO currency = accountService.getCurrency(Long.valueOf(accountId));
+    @RequestMapping("showFor/{id}")
+    public ResponseEntity<CurrencyDTO> showFor(@PathVariable("id") Long accountId) {
+        CurrencyDTO currency = accountService.getCurrency(accountId);
         return new ResponseEntity(currency, HttpStatus.OK);
     }
 }

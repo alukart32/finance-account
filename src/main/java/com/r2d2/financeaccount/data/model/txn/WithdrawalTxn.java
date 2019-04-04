@@ -9,13 +9,12 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-@Data
-@EqualsAndHashCode(exclude = "currency")
 @Entity
+@Getter
+@Setter
 public class WithdrawalTxn extends Transaction {
     private BigDecimal amount;
 
     @ManyToOne
     private Currency currency;
-
 }

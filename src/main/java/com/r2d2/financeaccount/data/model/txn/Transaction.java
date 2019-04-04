@@ -18,7 +18,6 @@ import java.util.Set;
 
 @Entity
 @Data
-@EqualsAndHashCode(exclude = "owner")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Transaction {
     @Id
@@ -26,20 +25,19 @@ public abstract class Transaction {
     private Long id;
 
     @ManyToOne
-    private Account account;
+    private Account src;
+
+    private BigDecimal accountBalance;
+
+    @Lob
+    private String reason;
+
+    @NotNull
+    private OffsetDateTime createDate;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Category category;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Tag> tagSet = new HashSet<>();
-
-    private BigDecimal newValue;
-
-    @NotNull
-    @Lob
-    private String reason;
-
-    @NotNull
-    private OffsetDateTime createDate;
 }

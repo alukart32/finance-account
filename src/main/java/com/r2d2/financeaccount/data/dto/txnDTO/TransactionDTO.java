@@ -3,6 +3,9 @@ package com.r2d2.financeaccount.data.dto.txnDTO;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.r2d2.financeaccount.data.dto.modelDTO.CategoryDTO;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 
@@ -13,25 +16,26 @@ import static com.fasterxml.jackson.annotation.JsonSubTypes.*;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "type"
 )
 @JsonSubTypes({
         @Type(value = WithdrawalTxnDTO.class, name = "withdrawal"),
         @Type(value = DepositTxnDTO.class, name = "deposit")
 })
+@Getter
+@Setter
 public abstract class TransactionDTO {
     private Long id;
 
     private String type;
 
-    @NotNull
     private String reason;
 
     private OffsetDateTime createDate;
 
     // [KN] Not required when de-serializing
-    private BigDecimal value;
+    private BigDecimal accountBalance;
 
     private CategoryDTO category;
 
@@ -43,4 +47,5 @@ public abstract class TransactionDTO {
         this.type = type;
     }
 
+    public TransactionDTO(){}
 }
