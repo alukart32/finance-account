@@ -1,5 +1,6 @@
 package com.r2d2.financeaccount.services.impl;
 
+import com.r2d2.financeaccount.exception.ApiException;
 import com.r2d2.financeaccount.mapper.OrikaMapper;
 import com.r2d2.financeaccount.data.dto.modelDTO.CategoryDTO;
 import com.r2d2.financeaccount.data.dto.modelDTO.CategoryNewDTO;
@@ -10,9 +11,10 @@ import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.services.service.CategoryService;
 import com.r2d2.financeaccount.services.service.PersonService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -31,6 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CategoryDTO getById(Long categoryId) {
         Category category = categoryRepository.findById(categoryId).
                 orElseThrow(NotFoundException::new);
@@ -38,19 +41,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Set<CategoryDTO> getAll(Long personId) {
         return mapper.mapAsSet(categoryRepository.findAll(), CategoryDTO.class);
     }
 
     @Override
-    public CategoryDTO create(CategoryNewDTO newCategory) {
-        final Category category =  mapper.map(newCategory, Category.class);
-        Category savedCategory = saveOrUpdate(category);
-
-        return mapper.map(savedCategory, CategoryDTO.class);
-    }
-
-    @Override
+    @Transactional
     public CategoryDTO addCategory(Long personId, CategoryNewDTO categoryNewDTO) {
         Person person = mapper.map(personService.getById(personId), Person.class);
 
@@ -92,6 +89,27 @@ public class CategoryServiceImpl implements CategoryService {
         return mapper.map(category , CategoryDTO.class);
     }
 
+/*
+    private Category getCategory(Long categoryId) {
+        return getCategory(categoryId, true);
+    }
+
+    private Category getCategory(Long categoryId, boolean needLock) {
+        Category category;
+        String msg = "No category found [id = " + categoryId + "]";
+        if (needLock) {
+            category = categoryRepository.findByIdForUpdate(categoryId).orElseThrow(notFound(msg));
+        } else {
+            category = categoryRepository.findById(categoryId).orElseThrow(notFound(msg));
+        }
+
+        return category;
+    }
+
+    private Supplier<ApiException> notFound(String s) {
+        return () -> new NotFoundException(s);
+    }
+*/
 
     @Override
     public Category saveOrUpdate(Category category) {

@@ -40,12 +40,14 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TransactionDTO getById(Long transactionId) {
         return mapper.map(transactionRepository.findById(transactionId).
                 orElseThrow(NotFoundException::new), TransactionDTO.class);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<TransactionDTO> getAll(Pageable pageable, Long accountId ) {
         Account account = mapper.map(accountService.getById(accountId), Account.class);
         Page<Transaction> transactions = transactionRepository.findAllByAccount(pageable, account);
@@ -60,24 +62,20 @@ public class TransactionServiceImpl implements TransactionService {
 
         DepositTxn transaction = mapper.map(txn, DepositTxn.class);
         if(account.getCurrency().getCode().equals(txn.getCurrency().getCode())) {
-
             transaction.setCreateDate(OffsetDateTime.now());
             transaction.setSrc(account);
 
-
-            BigDecimal value = account.getBalance();
+            BigDecimal balance = account.getBalance();
             BigDecimal amount = convertToCurrency(
                 transaction.getAmount(),
                 transaction.getCurrency(),
                 account.getCurrency());
-
-            BigDecimal newBalance = value.add(amount);
+            BigDecimal newBalance = balance.add(amount);
             account.setBalance(newBalance);
             transaction.setAccountBalance(newBalance);
 
             DepositTxn txnResult = transactionRepository.save(transaction);
             accountService.save(account);
-
             return mapper.map(txnResult, TransactionDTO.class);
         }
         else
@@ -100,21 +98,18 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setCreateDate(OffsetDateTime.now());
         transaction.setSrc(account);
 
-        BigDecimal value = account.getBalance();
-
+        BigDecimal balance = account.getBalance();
         BigDecimal amount = convertToCurrency(
                 transaction.getAmount(),
                 transaction.getCurrency(),
                 account.getCurrency()
         );
-
-        BigDecimal newBalance = value.subtract(amount);
+        BigDecimal newBalance = balance.subtract(amount);
         account.setBalance(newBalance);
         transaction.setAccountBalance(newBalance);
 
         WithdrawalTxn txnResult = transactionRepository.save(transaction);
         accountService.save(account);
-
         return mapper.map(txnResult, TransactionDTO.class);
         }
         else

@@ -1,8 +1,7 @@
-package com.r2d2.financeaccount.bootstrap;
+package com.r2d2.financeaccount.bootdata;
 
 import com.r2d2.financeaccount.data.model.Currency;
 import com.r2d2.financeaccount.data.repository.CurrencyRepository;
-import com.r2d2.financeaccount.services.service.CurrencyService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;

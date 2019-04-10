@@ -2,12 +2,10 @@ package com.r2d2.financeaccount.data.repository;
 
 import com.r2d2.financeaccount.data.model.Account;
 import com.r2d2.financeaccount.data.model.txn.Transaction;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 

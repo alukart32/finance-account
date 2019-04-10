@@ -34,14 +34,7 @@ public class PersonController {
         this.currencyService = currencyService;
     }
 
-
-    @RequestMapping("showAll")
-    public ResponseEntity<Set<PersonDTO>> showPeople(){
-        Set<PersonDTO> people = personService.getAll();
-        return new ResponseEntity(people, HttpStatus.OK);
-    }
-
-    @RequestMapping("{id}/show")
+    @RequestMapping("{id}")
     public ResponseEntity<PersonDTO> showPerson(@PathVariable("id") Long personId){
         PersonDTO person = personService.getById(personId);
         return new ResponseEntity(person, HttpStatus.OK);
@@ -54,10 +47,16 @@ public class PersonController {
         return new ResponseEntity(person, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "{id}/update", method = RequestMethod.PUT)
     public ResponseEntity<PersonDTO> update(@Valid @RequestBody PersonNewDTO personDTO,
                                                               @PathVariable("id") Long personId) {
         PersonDTO person = personService.update(personId, personDTO);
         return new ResponseEntity(person, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "{id}/delete", method = RequestMethod.DELETE)
+    public String delete(@PathVariable("id") Long personId){
+        personService.delete(personId);
+        return null;
     }
 }

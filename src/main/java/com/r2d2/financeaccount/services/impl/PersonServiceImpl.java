@@ -9,6 +9,7 @@ import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.services.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.HashSet;
@@ -42,6 +43,7 @@ public class PersonServiceImpl  implements PersonService {
      * @return All object PersonDTO(was he updated or not it doesn't matter)
      */
     @Override
+    @Transactional
     public PersonDTO create(PersonNewDTO newPerson) {
         final Person person = mapper.map(newPerson, Person.class);
         person.setRegisterDate(OffsetDateTime.now());
@@ -49,6 +51,7 @@ public class PersonServiceImpl  implements PersonService {
         return mapper.map(savedPerson, PersonDTO.class);
     }
 
+/*
     @Override
     public Set<PersonDTO> getAll(){
         Set<PersonDTO> peopleDTO = new HashSet<>();
@@ -58,6 +61,7 @@ public class PersonServiceImpl  implements PersonService {
         }
         return peopleDTO;
     }
+*/
 
     /** Update person by his id
      * @param personId
@@ -69,6 +73,7 @@ public class PersonServiceImpl  implements PersonService {
      * @return All object PersonDTO(was he updated or not it doesn't matter)
      */
     @Override
+    @Transactional
     public PersonDTO update(Long personId, PersonNewDTO personDTO){
         Person person = mapper.map(getById(Long.valueOf(personId)), Person.class);
 

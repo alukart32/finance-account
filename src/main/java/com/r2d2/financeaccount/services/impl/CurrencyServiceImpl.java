@@ -7,6 +7,7 @@ import com.r2d2.financeaccount.data.repository.CurrencyRepository;
 import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.services.service.CurrencyService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +24,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CurrencyDTO getById(String currencyCode) {
         Currency currency = currencyRepository.findByCode(currencyCode).
                 orElseThrow(NotFoundException::new);
@@ -35,6 +37,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
+    @Transactional
     public CurrencyDTO create(CurrencyDTO newCurrency) {
         final Currency currency = new Currency();
 

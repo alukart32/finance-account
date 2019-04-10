@@ -183,6 +183,7 @@ public class AccountServiceImpl implements AccountService {
         } else {
             acc = accountRepository.findById(accountId).orElseThrow(notFound(msg));
         }
+
         //ensureMine(acc);
         return acc;
     }

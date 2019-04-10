@@ -65,17 +65,4 @@ public class AccountController {
         accountService.update(accountId, accountNewDTO);
         return "redirect:/account/"+accountId+"/show";
     }
-
-    /*@RequestMapping(accountBalance = "/{id}/transactions", method = POST)
-    @ResponseStatus(CREATED)
-    public ResponseEntity<TransactionDTO> addTransaction(@RequestBody @Valid TransactionDTO tx,
-                                                         @PathVariable("id") Long accountId) {
-        if (tx instanceof DepositTxnDTO) {
-            return new ResponseEntity<>(accountService.deposit(accountId, (DepositTxnDTO) tx), HttpStatus.OK);
-        }
-        else if (tx instanceof WithdrawalTxnDTO) {
-            return new ResponseEntity<>(accountService.withdrawal(accountId, (WithdrawalTxnDTO) tx), HttpStatus.OK);
-        }
-        throw new TxnBadRequestException("Unsupported transaction type submitted");
-    }*/
 }

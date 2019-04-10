@@ -30,6 +30,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TagDTO getById(Long tagId) {
         Tag tag = tagRepository.findById(tagId).
                 orElseThrow(NotFoundException::new);
@@ -38,11 +39,13 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Set<TagDTO> getAll(Long personId) {
         return mapper.mapAsSet(tagRepository.findAll(), TagDTO.class);
     }
 
     @Override
+    @Transactional
     public TagDTO addTag(Long personId, TagNewDTO newTag) {
         Person person = mapper.map(personService.getById(personId), Person.class);
 
@@ -85,6 +88,7 @@ public class TagServiceImpl implements TagService {
     public void delete(Long id) { tagRepository.deleteById(id);}
 
     @Override
+    @Transactional
     public void removeFrom(Long personId, Long tagId) {
         Person person = mapper.map(personService.getById(personId), Person.class);
 
