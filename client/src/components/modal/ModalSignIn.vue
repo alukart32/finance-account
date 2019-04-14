@@ -1,6 +1,6 @@
 <template>
     <div>
-    <b-button v-b-modal.modal-1>Sign up</b-button>
+    <b-button v-b-modal.modal-1>Sign in</b-button>
 
     <b-modal id="modal-1" title="UserVue">
         <SignIn></SignIn>

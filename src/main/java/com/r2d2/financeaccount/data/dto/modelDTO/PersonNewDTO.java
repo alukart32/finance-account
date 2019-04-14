@@ -18,4 +18,6 @@ public class PersonNewDTO {
 
     @Length(max = 128)
     private String secondName;
+
+    private String email;
 }

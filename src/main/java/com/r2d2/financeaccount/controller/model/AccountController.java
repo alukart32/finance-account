@@ -1,4 +1,4 @@
-package com.r2d2.financeaccount.controller;
+package com.r2d2.financeaccount.controller.model;
 
 import com.r2d2.financeaccount.data.dto.modelDTO.AccountDTO;
 import com.r2d2.financeaccount.data.dto.modelDTO.AccountNewDTO;

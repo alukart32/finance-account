@@ -14,31 +14,37 @@ import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.services.service.AccountService;
 import com.r2d2.financeaccount.services.service.CurrencyService;
 import com.r2d2.financeaccount.services.service.PersonService;
+import com.r2d2.financeaccount.utils.security.principal.AuthService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
 @Service
 public class AccountServiceImpl implements AccountService {
-    AccountRepository accountRepository;
-    TransactionRepository transactionRepository;
+    private AccountRepository accountRepository;
+    private TransactionRepository transactionRepository;
 
-    CurrencyService currencyService;
-    PersonService personService;
+    private CurrencyService currencyService;
+    private PersonService personService;
 
-    OrikaMapper mapper;
+    private AuthService authService;
+
+    private OrikaMapper mapper;
 
     public AccountServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository,
-                              CurrencyService currencyService, PersonService personService, OrikaMapper mapper) {
+                              CurrencyService currencyService, PersonService personService,
+                              AuthService authService, OrikaMapper mapper) {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
         this.currencyService = currencyService;
         this.personService = personService;
+        this.authService = authService;
         this.mapper = mapper;
     }
 
@@ -52,13 +58,14 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = true)
     public CurrencyDTO getCurrency(Long accountId) {
-        return mapper.map(accountRepository.findById(accountId).get().getCurrency(), CurrencyDTO.class);
+        return mapper.map(accountRepository.findByOwner(authService.getMyself()).getCurrency(), CurrencyDTO.class);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Set<AccountDTO> getAll(Long personId) {
-        return mapper.mapAsSet(accountRepository.findAll(), AccountDTO.class);
+        Set<Account> accounts = accountRepository.findAllByOwner(authService.getMyself());
+        return mapper.mapAsSet(accounts, AccountDTO.class);
     }
 
     @Override

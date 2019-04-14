@@ -1,4 +1,4 @@
-package com.r2d2.financeaccount.controller;
+package com.r2d2.financeaccount.controller.txn;
 
 import com.r2d2.financeaccount.data.dto.txnDTO.DepositTxnDTO;
 import com.r2d2.financeaccount.data.dto.txnDTO.TransactionDTO;

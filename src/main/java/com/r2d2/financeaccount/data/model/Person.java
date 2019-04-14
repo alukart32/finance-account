@@ -26,6 +26,8 @@ public class Person {
     @Length(max = 128)
     private String secondName;
 
+    private String email;
+
     @Length(max = 128)
     private String password;
 

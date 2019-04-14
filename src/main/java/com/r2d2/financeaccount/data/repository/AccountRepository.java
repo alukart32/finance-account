@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static javax.persistence.LockModeType.PESSIMISTIC_WRITE;
 
@@ -19,4 +20,8 @@ public interface AccountRepository extends CrudRepository<Account, Long> {
     Optional<Account> findByIdForUpdate(Long id);
 
     Optional<Account> findByName(String name);
+
+    Set<Account> findAllByOwner(Person p);
+
+    Account findByOwner(Person p);
 }

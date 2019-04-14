@@ -16,5 +16,7 @@ public class PersonDTO {
 
     private String secondName;
 
+    private String email;
+
     private OffsetDateTime registerDate;
 }
