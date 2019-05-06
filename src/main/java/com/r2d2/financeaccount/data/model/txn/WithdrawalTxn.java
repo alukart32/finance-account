@@ -1,7 +1,5 @@
 package com.r2d2.financeaccount.data.model.txn;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import com.r2d2.financeaccount.data.model.Currency;
 import lombok.Getter;
 import lombok.Setter;

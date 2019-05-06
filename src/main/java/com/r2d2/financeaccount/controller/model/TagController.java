@@ -25,14 +25,14 @@ public class TagController {
         this.personService = personService;
     }
 
-    @RequestMapping("{id}/show")
-    public ResponseEntity<TagDTO> show(@PathVariable("id") Long tagId){
+    @RequestMapping("{id}")
+    public ResponseEntity<TagDTO> get(@PathVariable("id") Long tagId){
         TagDTO tagDTO = tagService.getById(tagId);
         return new ResponseEntity(tagDTO, HttpStatus.OK);
     }
 
-    @RequestMapping("showFor/{id}")
-    public ResponseEntity<Set<TagDTO>>showAllFor(@PathVariable("id") Long personId){
+    @RequestMapping("getAll/{id}")
+    public ResponseEntity<Set<TagDTO>> getAllFor(@PathVariable("id") Long personId){
         Set<TagDTO> tagDTOs = tagService.getAll(personId);
         return new ResponseEntity(tagDTOs, HttpStatus.OK);
     }
@@ -40,10 +40,10 @@ public class TagController {
 
     @RequestMapping(value = "addTo/{id}", method = RequestMethod.POST)
     @ResponseStatus(CREATED)
-    public String addTo(@Valid @RequestBody TagNewDTO tagNewDTO,
+    public void addTo(@Valid @RequestBody TagNewDTO tagNewDTO,
                         @PathVariable("id") Long personId){
         tagService.addTag(personId, tagNewDTO);
-        return "redirect:/category/showAllFor/"+personId;
+        /*return "redirect:/category/showAllFor/"+personId;*/
     }
 
     @RequestMapping(value = "{id}/removeFrom/{personId}", method = RequestMethod.DELETE)
@@ -55,6 +55,6 @@ public class TagController {
     @RequestMapping("{id}/update")
     public String update(@Valid @RequestBody TagNewDTO tagNewDTO, @PathVariable("id") Long tagId) {
         tagService.update(tagId, tagNewDTO);
-        return "redirect:/tag/"+tagId+"/show";
+        return "redirect:/tag/"+tagId;
     }
 }

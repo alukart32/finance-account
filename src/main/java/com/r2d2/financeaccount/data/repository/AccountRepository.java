@@ -5,6 +5,7 @@ import com.r2d2.financeaccount.data.model.Person;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 import java.util.Set;
@@ -23,5 +24,6 @@ public interface AccountRepository extends CrudRepository<Account, Long> {
 
     Set<Account> findAllByOwner(Person p);
 
-    Account findByOwner(Person p);
+    @Query("from Account a where a.id = :id and a.owner = :owner")
+    Account findByOwner(@Param("owner") Person p, @Param("id") Long accountId);
 }

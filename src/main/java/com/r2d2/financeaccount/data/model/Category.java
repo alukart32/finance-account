@@ -28,8 +28,15 @@ public class Category {
 
     public Category() {}
 
-    public Category(@NotNull @Length(min = 1, max = 256) String name, @NotNull @Length(max = 1024) String description) {
+    public Category(@NotNull @Length(min = 1, max = 256) String name, @NotNull @Length(max = 256) String description) {
         this.name = name;
         this.description = description;
+    }
+
+    public Category(@NotNull @Length(min = 1, max = 256) String name, @NotNull @Length(max = 256) String description,
+                    Person owner) {
+        this.name = name;
+        this.description = description;
+        this.owner = owner;
     }
 }

@@ -51,17 +51,14 @@ public class PersonServiceImpl  implements PersonService {
         return mapper.map(savedPerson, PersonDTO.class);
     }
 
-/*
+
     @Override
     public Set<PersonDTO> getAll(){
-        Set<PersonDTO> peopleDTO = new HashSet<>();
-
-        for (Person person: personRepository.findAll()) {
-            peopleDTO.add(mapper.map(person, PersonDTO.class));
-        }
-        return peopleDTO;
+        Set<Person> people = new HashSet<>();
+        personRepository.findAll().iterator().forEachRemaining(people::add);
+        return  mapper.mapAsSet(people, PersonDTO.class);
     }
-*/
+
 
     /** Update person by his id
      * @param personId
@@ -92,8 +89,8 @@ public class PersonServiceImpl  implements PersonService {
                 updated = false;
             }
 
-            if(!person.getUserName().equals(updatedPerson.getUserName())) {
-                person.setUserName(updatedPerson.getUserName());
+            if(!person.getUsername().equals(updatedPerson.getUsername())) {
+                person.setUsername(updatedPerson.getUsername());
                 updated = false;
             }
         }

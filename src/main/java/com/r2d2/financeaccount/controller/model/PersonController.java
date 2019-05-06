@@ -35,7 +35,7 @@ public class PersonController {
     }
 
     @RequestMapping("{id}")
-    public ResponseEntity<PersonDTO> showPerson(@PathVariable("id") Long personId){
+    public ResponseEntity<PersonDTO> getPerson(@PathVariable("id") Long personId){
         PersonDTO person = personService.getById(personId);
         return new ResponseEntity(person, HttpStatus.OK);
     }

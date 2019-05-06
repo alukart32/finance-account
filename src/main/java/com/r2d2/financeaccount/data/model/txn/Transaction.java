@@ -2,12 +2,8 @@ package com.r2d2.financeaccount.data.model.txn;
 
 import com.r2d2.financeaccount.data.model.Account;
 import com.r2d2.financeaccount.data.model.Category;
-import com.r2d2.financeaccount.data.model.Currency;
 import com.r2d2.financeaccount.data.model.Tag;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

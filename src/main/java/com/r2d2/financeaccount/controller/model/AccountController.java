@@ -2,10 +2,6 @@ package com.r2d2.financeaccount.controller.model;
 
 import com.r2d2.financeaccount.data.dto.modelDTO.AccountDTO;
 import com.r2d2.financeaccount.data.dto.modelDTO.AccountNewDTO;
-import com.r2d2.financeaccount.data.dto.txnDTO.DepositTxnDTO;
-import com.r2d2.financeaccount.data.dto.txnDTO.TransactionDTO;
-import com.r2d2.financeaccount.data.dto.txnDTO.WithdrawalTxnDTO;
-import com.r2d2.financeaccount.exception.TxnBadRequestException;
 import com.r2d2.financeaccount.services.service.AccountService;
 import com.r2d2.financeaccount.services.service.CurrencyService;
 import com.r2d2.financeaccount.services.service.PersonService;
@@ -33,36 +29,34 @@ public class AccountController {
         this.currencyService = currencyService;
     }
 
-    @RequestMapping("{id}/show")
+    @RequestMapping("{id}")
     public ResponseEntity<AccountDTO> show(@PathVariable("id") Long accountId){
         AccountDTO account = accountService.getById(accountId);
         return new ResponseEntity(account, HttpStatus.OK);
     }
 
-    @RequestMapping("showAllFor/{id}")
-    public ResponseEntity<Set<AccountDTO>> showAll(@PathVariable("id") Long personId){
-        Set<AccountDTO> accounts = accountService.getAll(personId);
+    @RequestMapping("getAll")
+    public ResponseEntity<Set<AccountDTO>> showAll(){
+        Set<AccountDTO> accounts = accountService.getAll();
         return new ResponseEntity(accounts, HttpStatus.OK);
     }
 
     @RequestMapping(value = "addTo/{id}", method = POST)
     @ResponseStatus(CREATED)
-    public String addTo(@Valid @RequestBody AccountNewDTO accountNewDTO,
+    public void addTo(@Valid @RequestBody AccountNewDTO accountNewDTO,
                                                 @PathVariable("id") Long personId){
-        AccountDTO accountDTO = accountService.addAccount(personId, accountNewDTO);
-        return "redirect:/account/"+accountDTO.getId()+"/show";
+        accountService.addAccount(personId, accountNewDTO);
     }
 
     @RequestMapping(value = "{id}/removeFrom/{personId}", method = RequestMethod.DELETE)
-    public String removeFrom(@PathVariable("id") Long accountId,@PathVariable Long personId){
+    public void removeFrom(@PathVariable("id") Long accountId,@PathVariable Long personId){
         accountService.removeFrom(personId, accountId);
-        return "redirect:/account/showAllFor/" + personId;
+        /*return "redirect:/account/showAllFor/" + personId;*/
     }
 
     @RequestMapping(value = "{id}/update", method = RequestMethod.PUT)
-    public String update(@RequestBody AccountNewDTO accountNewDTO,
+    public void update(@RequestBody AccountNewDTO accountNewDTO,
                                              @PathVariable("id") Long accountId){
         accountService.update(accountId, accountNewDTO);
-        return "redirect:/account/"+accountId+"/show";
     }
 }

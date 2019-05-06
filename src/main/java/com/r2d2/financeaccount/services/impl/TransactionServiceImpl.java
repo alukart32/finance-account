@@ -15,6 +15,8 @@ import com.r2d2.financeaccount.data.repository.TransactionRepository;
 import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.services.service.AccountService;
 import com.r2d2.financeaccount.services.service.TransactionService;
+import com.r2d2.financeaccount.utils.security.core.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,9 @@ public class TransactionServiceImpl implements TransactionService {
     AccountService accountService;
 
     OrikaMapper mapper;
+
+    @Autowired
+    AuthService authService;
 
     public TransactionServiceImpl(TransactionRepository<Transaction> transactionRepository, AccountService accountService,
                                   OrikaMapper mapper) {
@@ -58,9 +63,10 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public TransactionDTO deposit(Long accountId, DepositTxnDTO txn) {
         try{
-        Account account = mapper.map(accountService.getById(accountId),Account.class);
+        Account account = accountService.getByOwner(authService.getMyself(), accountId);
 
         DepositTxn transaction = mapper.map(txn, DepositTxn.class);
+
         if(account.getCurrency().getCode().equals(txn.getCurrency().getCode())) {
             transaction.setCreateDate(OffsetDateTime.now());
             transaction.setSrc(account);
@@ -70,12 +76,14 @@ public class TransactionServiceImpl implements TransactionService {
                 transaction.getAmount(),
                 transaction.getCurrency(),
                 account.getCurrency());
+
             BigDecimal newBalance = balance.add(amount);
             account.setBalance(newBalance);
             transaction.setAccountBalance(newBalance);
 
             DepositTxn txnResult = transactionRepository.save(transaction);
             accountService.save(account);
+
             return mapper.map(txnResult, TransactionDTO.class);
         }
         else
@@ -90,7 +98,8 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public TransactionDTO withdrawal(Long accountId, WithdrawalTxnDTO txn) {
         try {
-        Account account = mapper.map(accountService.getById(accountId),Account.class);
+
+        Account account = accountService.getByOwner(authService.getMyself(), accountId);
 
         WithdrawalTxn transaction = mapper.map(txn, WithdrawalTxn.class);
         if(account.getCurrency().getCode().equals(txn.getCurrency().getCode())) {

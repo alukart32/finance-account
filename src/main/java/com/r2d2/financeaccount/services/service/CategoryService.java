@@ -11,6 +11,8 @@ public interface CategoryService {
 
     Set<CategoryDTO> getAll(Long personId);
 
+    Set<CategoryDTO> getDefault();
+
     CategoryDTO addCategory(Long personId, CategoryNewDTO categoryNewDTO);
 
     Category saveOrUpdate(Category category);

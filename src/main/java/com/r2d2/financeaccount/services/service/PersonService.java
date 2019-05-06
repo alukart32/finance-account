@@ -10,7 +10,7 @@ public interface PersonService {
 
     PersonDTO getById(Long personId);
 
-   // Set<PersonDTO> getAll();
+    Set<PersonDTO> getAll();
 
     PersonDTO create(PersonNewDTO newPerson);
 

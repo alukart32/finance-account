@@ -1,5 +1,6 @@
 package com.r2d2.financeaccount.services.impl;
 
+import com.r2d2.financeaccount.exception.ForbiddenException;
 import com.r2d2.financeaccount.mapper.OrikaMapper;
 import com.r2d2.financeaccount.data.dto.modelDTO.AccountDTO;
 import com.r2d2.financeaccount.data.dto.modelDTO.AccountNewDTO;
@@ -14,14 +15,12 @@ import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.services.service.AccountService;
 import com.r2d2.financeaccount.services.service.CurrencyService;
 import com.r2d2.financeaccount.services.service.PersonService;
-import com.r2d2.financeaccount.utils.security.principal.AuthService;
+import com.r2d2.financeaccount.utils.security.core.AuthService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -51,19 +50,25 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = true)
     public AccountDTO getById(Long accountId) {
-        Account account = getAccount(accountId, false);
-        return mapper.map(account, AccountDTO.class);
+        return mapper.map(accountRepository.findByOwner(authService.getMyself(), accountId), AccountDTO.class);
+    }
+
+
+    @Override
+    @Transactional
+    public Account getByOwner(Person person, Long accountId) {
+        return accountRepository.findByOwner(authService.getMyself(), accountId);
     }
 
     @Override
     @Transactional(readOnly = true)
     public CurrencyDTO getCurrency(Long accountId) {
-        return mapper.map(accountRepository.findByOwner(authService.getMyself()).getCurrency(), CurrencyDTO.class);
+        return mapper.map(accountRepository.findByOwner(authService.getMyself(), accountId).getCurrency(), CurrencyDTO.class);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Set<AccountDTO> getAll(Long personId) {
+    public Set<AccountDTO> getAll() {
         Set<Account> accounts = accountRepository.findAllByOwner(authService.getMyself());
         return mapper.mapAsSet(accounts, AccountDTO.class);
     }
@@ -71,7 +76,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public AccountDTO addAccount(Long personId, AccountNewDTO accountNewDTO) {
-        Person person = mapper.map(personService.getById(personId), Person.class);
+        Person person = authService.getMyself();
         Account account = mapper.map(accountNewDTO, Account.class);
 
         if(accountNewDTO.getName() != null & accountNewDTO.getCurrency() != null) {
@@ -186,13 +191,20 @@ public class AccountServiceImpl implements AccountService {
         Account acc;
         String msg = "No account found [id = " + accountId + "]";
         if (needLock) {
-            acc = accountRepository.findByIdForUpdate(accountId).orElseThrow(notFound(msg));
+            acc = accountRepository.findById(accountId).orElseThrow(notFound(msg));
         } else {
             acc = accountRepository.findById(accountId).orElseThrow(notFound(msg));
         }
 
-        //ensureMine(acc);
+        ensureMine(acc);
         return acc;
+    }
+
+    private void ensureMine(Account acc) {
+        Long ownerId = acc.getOwner().getId();
+        if (!ownerId.equals(authService.getMyself().getId())) {
+            throw new ForbiddenException("You have no permission to access this account");
+        }
     }
 
     private Supplier<ApiException> notFound(String s) {

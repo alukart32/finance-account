@@ -25,24 +25,29 @@ public class CategoryController {
         this.personService = personService;
     }
 
-    @RequestMapping("{id}/show")
-    public ResponseEntity<CategoryDTO> show(@PathVariable("id") Long categoryId){
+    @RequestMapping("default")
+    public ResponseEntity<Set<CategoryDTO>> getDefault(){
+        Set<CategoryDTO> category = categoryService.getDefault();
+        return new ResponseEntity(category, HttpStatus.OK);
+    }
+
+    @RequestMapping("{id}")
+    public ResponseEntity<CategoryDTO> get(@PathVariable("id") Long categoryId){
         CategoryDTO category = categoryService.getById(categoryId);
         return new ResponseEntity(category, HttpStatus.OK);
     }
 
-    @RequestMapping("showAllFor/{id}")
-    public ResponseEntity<Set<CategoryDTO>> showAll(@PathVariable("id") Long personId){
-        Set<CategoryDTO> people = categoryService.getAll(personId);
-        return new ResponseEntity(people, HttpStatus.OK);
+    @RequestMapping("getAll/{id}")
+    public ResponseEntity<Set<CategoryDTO>> getAll(@PathVariable("id") Long personId){
+        Set<CategoryDTO> categories = categoryService.getAll(personId);
+        return new ResponseEntity(categories, HttpStatus.OK);
     }
 
     @RequestMapping(value = "addTo/{id}", method = RequestMethod.POST)
     @ResponseStatus(CREATED)
-    public String addTo(@Valid @RequestBody CategoryNewDTO categoryNewDTO,
+    public void addTo(@Valid @RequestBody CategoryNewDTO categoryNewDTO,
                                                            @PathVariable("id") Long personId){
         categoryService.addCategory(personId, categoryNewDTO);
-        return "redirect:/category/showAllFor/"+personId;
     }
 
     @RequestMapping(value = "{id}/removeFrom/{personId}", method = RequestMethod.DELETE)
@@ -55,6 +60,6 @@ public class CategoryController {
     public String update(@Valid @RequestBody CategoryNewDTO categoryNewDTO,
                                             @PathVariable("id") Long categoryId) {
         categoryService.update(categoryId, categoryNewDTO);
-        return "redirect:/category/"+categoryId+"/show";
+        return "redirect:/category/"+categoryId;
     }
 }

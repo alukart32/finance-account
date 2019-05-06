@@ -3,11 +3,8 @@ package com.r2d2.financeaccount.data.dto.txnDTO;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.r2d2.financeaccount.data.dto.modelDTO.CategoryDTO;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;

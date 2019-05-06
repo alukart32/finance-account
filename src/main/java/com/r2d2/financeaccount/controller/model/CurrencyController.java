@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 @RestController
 @RequestMapping("/currency/")
 public class CurrencyController {
@@ -21,9 +23,9 @@ public class CurrencyController {
         this.personService = personService;
     }
 
-    @RequestMapping("showFor/{id}")
-    public ResponseEntity<CurrencyDTO> showFor(@PathVariable("id") Long accountId) {
-        CurrencyDTO currency = accountService.getCurrency(accountId);
+    @RequestMapping("getAll")
+    public ResponseEntity<Set<CurrencyDTO>> get() {
+        Set<CurrencyDTO> currency = currencyService.getAll();
         return new ResponseEntity(currency, HttpStatus.OK);
     }
 }

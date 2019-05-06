@@ -5,11 +5,10 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class AccountNewDTO {
+public class AccountUpdateDTO {
     @NotEmpty
     @Length(max = 256)
     private String name;
@@ -17,6 +16,4 @@ public class AccountNewDTO {
     @Length(max = 256)
     private String description;
 
-    @NotNull
-    private CurrencyIdDTO currency;
 }

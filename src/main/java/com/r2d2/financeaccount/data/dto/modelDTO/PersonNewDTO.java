@@ -11,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
 public class PersonNewDTO {
     @NotEmpty
     @Length(min = 1, max = 40)
-    private String userName;
+    private String username;
 
     @Length(max = 128)
     private String firstName;

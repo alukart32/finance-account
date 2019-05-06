@@ -1,5 +1,6 @@
 package com.r2d2.financeaccount.data.model;
 
+import com.r2d2.financeaccount.utils.security.core.Role;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -18,7 +19,7 @@ public class Person {
 
     @NotNull
     @Length(min = 1, max = 40)
-    private String userName;
+    private String username;
 
     @Length(max = 128)
     private String firstName;
@@ -33,13 +34,19 @@ public class Person {
 
     private OffsetDateTime registerDate;
 
-    @OneToMany(mappedBy = "owner")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private Set<Account> accounts = new HashSet<>();
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Category> categories = new HashSet<>();
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Tag> tags = new HashSet<>();
 
     public Person addAccount(Account account) {

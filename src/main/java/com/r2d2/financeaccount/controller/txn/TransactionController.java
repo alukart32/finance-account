@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Set;
 
 
 @RestController
@@ -27,13 +26,13 @@ public class TransactionController {
         this.txnService = txnService;
     }
 
-    @RequestMapping("show/{txnId}")
-    public ResponseEntity<TransactionDTO> show(@PathVariable("txnId") Long txnId) {
+    @RequestMapping("get/{txnId}")
+    public ResponseEntity<TransactionDTO> get(@PathVariable("txnId") Long txnId) {
         return new ResponseEntity(txnService.getById(txnId), HttpStatus.OK);
     }
 
-    @RequestMapping("showAll")
-    public Page<TransactionDTO> showAll(Pageable pageable, @PathVariable("id") Long accountId) {
+    @RequestMapping("getAll")
+    public Page<TransactionDTO> getAll(Pageable pageable, @PathVariable("id") Long accountId) {
         return txnService.getAll(pageable, accountId);
     }
 

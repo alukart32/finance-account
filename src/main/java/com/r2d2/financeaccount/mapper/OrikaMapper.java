@@ -6,7 +6,6 @@ import com.r2d2.financeaccount.data.model.txn.DepositTxn;
 import com.r2d2.financeaccount.data.model.txn.WithdrawalTxn;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.stereotype.Component;
 
 @Component

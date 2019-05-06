@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 public class PersonDTO {
     private Long id;
 
-    private String userName;
+    private String username;
 
     private String firstName;
 

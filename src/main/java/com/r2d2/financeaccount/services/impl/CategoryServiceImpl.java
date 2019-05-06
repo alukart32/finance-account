@@ -1,6 +1,5 @@
 package com.r2d2.financeaccount.services.impl;
 
-import com.r2d2.financeaccount.exception.ApiException;
 import com.r2d2.financeaccount.mapper.OrikaMapper;
 import com.r2d2.financeaccount.data.dto.modelDTO.CategoryDTO;
 import com.r2d2.financeaccount.data.dto.modelDTO.CategoryNewDTO;
@@ -10,11 +9,12 @@ import com.r2d2.financeaccount.data.repository.CategoryRepository;
 import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.services.service.CategoryService;
 import com.r2d2.financeaccount.services.service.PersonService;
+import com.r2d2.financeaccount.utils.security.core.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
-import java.util.function.Supplier;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -24,6 +24,9 @@ public class CategoryServiceImpl implements CategoryService {
     PersonService personService;
 
     OrikaMapper mapper;
+
+    @Autowired
+    AuthService authService;
 
     public CategoryServiceImpl(CategoryRepository categoryRepository, PersonService personService,
                                OrikaMapper mapper) {
@@ -43,7 +46,15 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public Set<CategoryDTO> getAll(Long personId) {
-        return mapper.mapAsSet(categoryRepository.findAll(), CategoryDTO.class);
+        Set<Category> categories = categoryRepository.findAllByOwner(null);
+        categories.addAll(categoryRepository.findAllByOwner(authService.getMyself()));
+        return mapper.mapAsSet(categories, CategoryDTO.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<CategoryDTO> getDefault() {
+        return mapper.mapAsSet(categoryRepository.findAllByOwner(null), CategoryDTO.class);
     }
 
     @Override

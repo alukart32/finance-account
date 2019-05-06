@@ -9,7 +9,6 @@ import com.r2d2.financeaccount.services.service.CurrencyService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Service

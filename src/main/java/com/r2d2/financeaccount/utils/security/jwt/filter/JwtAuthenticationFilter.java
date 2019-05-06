@@ -1,6 +1,9 @@
 package com.r2d2.financeaccount.utils.security.jwt.filter;
 
-import com.r2d2.financeaccount.utils.security.principal.JwtTokenProvider;
+import com.r2d2.financeaccount.utils.security.core.JwtTokenProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,18 +24,13 @@ import java.io.IOException;
  */
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
+    @Autowired
     private JwtTokenProvider tokenProvider;
 
-    private UserDetailsService customUserDetailsService;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter() {
-    }
-
-    public JwtAuthenticationFilter(JwtTokenProvider tokenProvider, UserDetailsService customUserDetailsService) {
-        this.tokenProvider = tokenProvider;
-        this.customUserDetailsService = customUserDetailsService;
-    }
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -42,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(jwt) && tokenProvider.isTokenValid(jwt)) {
                 String username = tokenProvider.getUsernameFromJWT(jwt);
 
-                UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
 

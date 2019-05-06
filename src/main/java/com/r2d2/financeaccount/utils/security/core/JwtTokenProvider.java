@@ -1,4 +1,4 @@
-package com.r2d2.financeaccount.utils.security.principal;
+package com.r2d2.financeaccount.utils.security.core;
 
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
