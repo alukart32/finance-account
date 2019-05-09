@@ -23,16 +23,13 @@ public abstract class Transaction {
     @ManyToOne
     private Account src;
 
-    private BigDecimal accountBalance;
+    private BigDecimal balance;
 
     @Lob
     private String reason;
 
     @NotNull
     private OffsetDateTime createDate;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Category category;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Tag> tagSet = new HashSet<>();

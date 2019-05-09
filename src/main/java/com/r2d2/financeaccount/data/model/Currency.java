@@ -16,8 +16,7 @@ public class Currency {
     @Column(length = 40)
     private String humanReadableName;
 
-    public Currency() {
-    }
+    public Currency() {}
 
     public Currency(String code, String humanReadableName) {
         this.code = code;

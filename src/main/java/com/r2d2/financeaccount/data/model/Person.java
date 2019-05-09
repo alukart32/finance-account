@@ -14,7 +14,7 @@ import java.util.Set;
 @Entity
 public class Person {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull

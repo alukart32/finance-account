@@ -13,7 +13,7 @@ import java.time.OffsetDateTime;
 @Data
 public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

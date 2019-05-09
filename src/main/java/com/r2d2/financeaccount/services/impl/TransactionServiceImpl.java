@@ -79,7 +79,7 @@ public class TransactionServiceImpl implements TransactionService {
 
             BigDecimal newBalance = balance.add(amount);
             account.setBalance(newBalance);
-            transaction.setAccountBalance(newBalance);
+            transaction.setBalance(newBalance);
 
             DepositTxn txnResult = transactionRepository.save(transaction);
             accountService.save(account);
@@ -115,7 +115,7 @@ public class TransactionServiceImpl implements TransactionService {
         );
         BigDecimal newBalance = balance.subtract(amount);
         account.setBalance(newBalance);
-        transaction.setAccountBalance(newBalance);
+        transaction.setBalance(newBalance);
 
         WithdrawalTxn txnResult = transactionRepository.save(transaction);
         accountService.save(account);

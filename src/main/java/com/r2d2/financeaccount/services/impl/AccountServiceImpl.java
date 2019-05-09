@@ -26,21 +26,21 @@ import java.util.function.Supplier;
 
 @Service
 public class AccountServiceImpl implements AccountService {
+
     private AccountRepository accountRepository;
-    private TransactionRepository transactionRepository;
 
     private CurrencyService currencyService;
+
     private PersonService personService;
 
     private AuthService authService;
 
     private OrikaMapper mapper;
 
-    public AccountServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository,
+    public AccountServiceImpl(AccountRepository accountRepository,
                               CurrencyService currencyService, PersonService personService,
                               AuthService authService, OrikaMapper mapper) {
         this.accountRepository = accountRepository;
-        this.transactionRepository = transactionRepository;
         this.currencyService = currencyService;
         this.personService = personService;
         this.authService = authService;

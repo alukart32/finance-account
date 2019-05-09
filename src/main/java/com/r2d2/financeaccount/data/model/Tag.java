@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Tag {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull

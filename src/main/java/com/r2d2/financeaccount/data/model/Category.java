@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -23,7 +23,7 @@ public class Category {
     private String name;
 
     @NotNull
-    @Length(max = 1024)
+    @Length(max = 256)
     private String description;
 
     public Category() {}
