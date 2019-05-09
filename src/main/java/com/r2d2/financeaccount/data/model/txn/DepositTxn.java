@@ -1,6 +1,7 @@
 package com.r2d2.financeaccount.data.model.txn;
 
 import com.r2d2.financeaccount.data.model.Currency;
+import com.r2d2.financeaccount.data.model.ProfitSource;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,8 +12,6 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class DepositTxn extends Transaction {
-    private BigDecimal amount;
-
-    @ManyToOne
-    private Currency currency;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private ProfitSource profitSource;
 }

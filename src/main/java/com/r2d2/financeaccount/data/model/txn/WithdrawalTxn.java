@@ -12,11 +12,6 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class WithdrawalTxn extends Transaction {
-    private BigDecimal amount;
-
-    @ManyToOne
-    private Currency currency;
-
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Category category;
 }

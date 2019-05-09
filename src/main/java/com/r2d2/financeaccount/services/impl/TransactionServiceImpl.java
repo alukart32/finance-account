@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -65,29 +66,10 @@ public class TransactionServiceImpl implements TransactionService {
         try{
         Account account = accountService.getByOwner(authService.getMyself(), accountId);
 
-        DepositTxn transaction = mapper.map(txn, DepositTxn.class);
+        DepositTxn txnResult = transactionRepository.save((DepositTxn) setTxn(txn, account));
+        accountService.save(account);
 
-        if(account.getCurrency().getCode().equals(txn.getCurrency().getCode())) {
-            transaction.setCreateDate(OffsetDateTime.now());
-            transaction.setSrc(account);
-
-            BigDecimal balance = account.getBalance();
-            BigDecimal amount = convertToCurrency(
-                transaction.getAmount(),
-                transaction.getCurrency(),
-                account.getCurrency());
-
-            BigDecimal newBalance = balance.add(amount);
-            account.setBalance(newBalance);
-            transaction.setBalance(newBalance);
-
-            DepositTxn txnResult = transactionRepository.save(transaction);
-            accountService.save(account);
-
-            return mapper.map(txnResult, TransactionDTO.class);
-        }
-        else
-            throw new ApiException("Different currency!!! DepositTxn, Account");
+        return mapper.map(txnResult, TransactionDTO.class);
         }catch (ApiException e){
             rollback();
             throw new TxnBadRequestException("Something is wrong");
@@ -101,32 +83,58 @@ public class TransactionServiceImpl implements TransactionService {
 
         Account account = accountService.getByOwner(authService.getMyself(), accountId);
 
-        WithdrawalTxn transaction = mapper.map(txn, WithdrawalTxn.class);
-        if(account.getCurrency().getCode().equals(txn.getCurrency().getCode())) {
-
-        transaction.setCreateDate(OffsetDateTime.now());
-        transaction.setSrc(account);
-
-        BigDecimal balance = account.getBalance();
-        BigDecimal amount = convertToCurrency(
-                transaction.getAmount(),
-                transaction.getCurrency(),
-                account.getCurrency()
-        );
-        BigDecimal newBalance = balance.subtract(amount);
-        account.setBalance(newBalance);
-        transaction.setBalance(newBalance);
-
-        WithdrawalTxn txnResult = transactionRepository.save(transaction);
+        WithdrawalTxn txnResult = transactionRepository.save((WithdrawalTxn) setTxn(txn, account));
         accountService.save(account);
+
         return mapper.map(txnResult, TransactionDTO.class);
-        }
-        else
-            throw new ApiException("Different currency!!! DepositTxn, Account");
+
         }catch (ApiException e){
             rollback();
             throw new TxnBadRequestException("Something is wrong");
         }
+    }
+
+    private Transaction setTxn(TransactionDTO txn, Account account){
+
+        Transaction t = null;
+
+        /**
+         * false - withdrawal
+         * true - deposit
+         */
+        boolean operation = false;
+
+        if (txn instanceof DepositTxnDTO) {
+            t = mapper.map(txn, DepositTxn.class);
+            operation = true;
+        }
+        else if (txn instanceof WithdrawalTxnDTO) {
+            t = mapper.map(txn, WithdrawalTxn.class);
+        }
+
+        if(account.getCurrency().getCode().equals(txn.getCurrency().getCode())) {
+            Objects.requireNonNull(t).setCreateDate(OffsetDateTime.now());
+
+            t.setSrc(account);
+
+            BigDecimal balance = account.getBalance();
+
+            BigDecimal amount = convertToCurrency(  t.getAmount(), t.getCurrency(), account.getCurrency());
+
+            BigDecimal newBalance;
+
+            if (operation)
+               newBalance = balance.add(amount);
+            else
+                newBalance = balance.subtract(amount);
+
+            account.setBalance(newBalance);
+
+            t.setBalance(newBalance);
+        }
+        else
+            throw new ApiException("Different currency!!! Txn, Account");
+        return t;
     }
 
     private BigDecimal convertToCurrency(BigDecimal amount, Currency from, Currency to) {

@@ -1,11 +1,14 @@
 package com.r2d2.financeaccount.data.dto.txnDTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.r2d2.financeaccount.data.dto.modelDTO.CategoryDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.CurrencyIdDTO;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
@@ -29,12 +32,17 @@ public abstract class TransactionDTO {
 
     private String reason;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private OffsetDateTime createDate;
 
+    private CurrencyIdDTO currency;
+
+    @Positive
     // [KN] Not required when de-serializing
     private BigDecimal accountBalance;
 
-    private CategoryDTO category;
+    @Positive
+    private BigDecimal amount;
 
     public String getType() {
         return type;
