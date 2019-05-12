@@ -9,6 +9,8 @@ import java.util.Set;
 public interface CategoryService {
     CategoryDTO getById(Long categoryId);
 
+    Category getByName(String name);
+
     Set<CategoryDTO> getAll(Long personId);
 
     Set<CategoryDTO> getDefault();

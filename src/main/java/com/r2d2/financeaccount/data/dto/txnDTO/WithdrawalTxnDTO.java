@@ -1,6 +1,7 @@
 package com.r2d2.financeaccount.data.dto.txnDTO;
 
 import com.r2d2.financeaccount.data.dto.modelDTO.CategoryDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.CategoryNewDTO;
 import com.r2d2.financeaccount.data.dto.modelDTO.CurrencyIdDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,5 +19,5 @@ public class WithdrawalTxnDTO extends TransactionDTO {
     }
 
     @NotNull
-    private String category;
+    private CategoryNewDTO category;
 }

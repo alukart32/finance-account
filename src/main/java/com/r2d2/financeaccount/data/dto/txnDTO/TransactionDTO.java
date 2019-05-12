@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.r2d2.financeaccount.data.dto.modelDTO.CategoryDTO;
 import com.r2d2.financeaccount.data.dto.modelDTO.CurrencyIdDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.TagNewDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,10 +33,12 @@ public abstract class TransactionDTO {
 
     private String reason;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-mm-dd")
     private OffsetDateTime createDate;
 
     private CurrencyIdDTO currency;
+
+    private TagNewDTO tag;
 
     @Positive
     // [KN] Not required when de-serializing

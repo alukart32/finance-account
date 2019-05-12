@@ -9,6 +9,8 @@ import com.r2d2.financeaccount.data.repository.TagRepository;
 import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.services.service.PersonService;
 import com.r2d2.financeaccount.services.service.TagService;
+import com.r2d2.financeaccount.utils.security.core.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,9 @@ public class TagServiceImpl implements TagService {
     TagRepository tagRepository;
 
     PersonService personService;
+
+    @Autowired
+    AuthService authService;
 
     OrikaMapper mapper;
 
@@ -36,6 +41,12 @@ public class TagServiceImpl implements TagService {
                 orElseThrow(NotFoundException::new);
         return mapper.map(tag, TagDTO.class);
 
+    }
+
+    @Override
+    public Tag getByName(String name) {
+        return tagRepository.findByName(name)
+                .orElse(tagRepository.save(new Tag(name, authService.getMyself())));
     }
 
     @Override

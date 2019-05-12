@@ -3,6 +3,7 @@ package com.r2d2.financeaccount.utils.security.core;
 import com.r2d2.financeaccount.data.dto.authDTO.JwtResponseDTO;
 import com.r2d2.financeaccount.data.dto.authDTO.LogInDTO;
 import com.r2d2.financeaccount.data.dto.authDTO.RegistrationDTO;
+import com.r2d2.financeaccount.data.dto.modelDTO.PersonDTO;
 import com.r2d2.financeaccount.data.model.Person;
 import com.r2d2.financeaccount.data.repository.PersonRepository;
 import com.r2d2.financeaccount.data.repository.RoleRepository;
@@ -58,7 +59,7 @@ public class AuthService {
         String jwt = jwtTokenProvider.generateToken(authentication);
 
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return new JwtResponseDTO(jwt, principal.getPerson().getId());
+        return new JwtResponseDTO(jwt, principal.getPerson().getId(), mapper.map(principal.getPerson(), PersonDTO.class));
     }
 
     @Transactional

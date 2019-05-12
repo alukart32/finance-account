@@ -9,6 +9,8 @@ import java.util.Set;
 public interface TagService {
     TagDTO getById(Long tagId);
 
+    Tag getByName(String name);
+
     Set<TagDTO> getAll(Long personId);
 
     TagDTO addTag(Long personId, TagNewDTO newTag);

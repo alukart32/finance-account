@@ -16,7 +16,7 @@ public class Tag {
     private Long id;
 
     @NotNull
-    @Length(min = 1, max = 64)
+    @Length(max = 64)
     private String name;
 
     @ManyToOne
@@ -26,5 +26,10 @@ public class Tag {
 
     public Tag(String name) {
         this.name = name;
+    }
+
+    public Tag(@NotNull @Length(max = 64) String name, Person owner) {
+        this.name = name;
+        this.owner = owner;
     }
 }

@@ -8,6 +8,8 @@ import java.util.Set;
 
 public interface ProfitSourceService {
 
+    ProfitSource getByName(String name);
+
     ProfitSourceDTO getById(Long id);
 
     Set<ProfitSourceDTO> getAll();

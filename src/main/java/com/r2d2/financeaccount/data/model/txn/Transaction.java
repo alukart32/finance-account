@@ -41,6 +41,6 @@ public abstract class Transaction {
     @NotNull
     private OffsetDateTime createDate;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<Tag> tagSet = new HashSet<>();
+    @ManyToOne
+    private Tag tag;
 }

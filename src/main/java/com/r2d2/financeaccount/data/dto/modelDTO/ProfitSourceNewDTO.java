@@ -10,10 +10,9 @@ import javax.validation.constraints.NotEmpty;
 @Setter
 public class ProfitSourceNewDTO {
     @NotEmpty
-    @Length(min = 1, max = 256)
+    @Length(max = 256)
     private String name;
 
-    @NotEmpty
-    @Length(min = 1, max = 256)
+    @Length(max = 256)
     private String description;
 }

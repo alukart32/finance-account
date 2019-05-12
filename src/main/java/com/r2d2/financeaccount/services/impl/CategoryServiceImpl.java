@@ -45,6 +45,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
+    public Category getByName(String name) {
+        return categoryRepository.findByName(name)
+                .orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Set<CategoryDTO> getAll(Long personId) {
         Set<Category> categories = categoryRepository.findAllByOwner(null);
         categories.addAll(categoryRepository.findAllByOwner(authService.getMyself()));

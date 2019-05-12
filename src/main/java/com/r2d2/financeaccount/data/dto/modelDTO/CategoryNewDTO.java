@@ -16,5 +16,4 @@ public class CategoryNewDTO {
 
     @Lob
     private String description;
-
 }

@@ -4,6 +4,7 @@ import com.r2d2.financeaccount.data.dto.modelDTO.ProfitSourceDTO;
 import com.r2d2.financeaccount.data.dto.modelDTO.ProfitSourceNewDTO;
 import com.r2d2.financeaccount.data.model.ProfitSource;
 import com.r2d2.financeaccount.data.repository.ProfitSourceRepository;
+import com.r2d2.financeaccount.exception.NotFoundException;
 import com.r2d2.financeaccount.mapper.OrikaMapper;
 import com.r2d2.financeaccount.services.service.ProfitSourceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,12 @@ public class ProfitSourceServiceImpl implements ProfitSourceService {
 
     @Autowired
     OrikaMapper mapper;
+
+    @Override
+    public ProfitSource getByName(String name) {
+        return profitSourceRepository.findByName(name).
+                orElseThrow(NotFoundException::new);
+    }
 
     @Override
     public ProfitSourceDTO getById(Long id) {

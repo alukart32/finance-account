@@ -13,8 +13,7 @@ import com.r2d2.financeaccount.data.model.txn.Transaction;
 import com.r2d2.financeaccount.data.model.txn.WithdrawalTxn;
 import com.r2d2.financeaccount.data.repository.TransactionRepository;
 import com.r2d2.financeaccount.exception.NotFoundException;
-import com.r2d2.financeaccount.services.service.AccountService;
-import com.r2d2.financeaccount.services.service.TransactionService;
+import com.r2d2.financeaccount.services.service.*;
 import com.r2d2.financeaccount.utils.security.core.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +31,15 @@ public class TransactionServiceImpl implements TransactionService {
     TransactionRepository<Transaction> transactionRepository;
 
     AccountService accountService;
+
+    @Autowired
+    ProfitSourceService profitSourceService;
+
+    @Autowired
+    CategoryService categoryService;
+
+    @Autowired
+    TagService tagService;
 
     OrikaMapper mapper;
 
@@ -106,10 +114,15 @@ public class TransactionServiceImpl implements TransactionService {
 
         if (txn instanceof DepositTxnDTO) {
             t = mapper.map(txn, DepositTxn.class);
+
+            ((DepositTxn) t).setProfitSource(profitSourceService.getByName(((DepositTxnDTO) txn).getProfitSource().getName()));
+
             operation = true;
         }
         else if (txn instanceof WithdrawalTxnDTO) {
             t = mapper.map(txn, WithdrawalTxn.class);
+
+            ((WithdrawalTxn) t).setCategory(categoryService.getByName(((WithdrawalTxnDTO) txn).getCategory().getName()));
         }
 
         if(account.getCurrency().getCode().equals(txn.getCurrency().getCode())) {
@@ -122,6 +135,9 @@ public class TransactionServiceImpl implements TransactionService {
             BigDecimal amount = convertToCurrency(  t.getAmount(), t.getCurrency(), account.getCurrency());
 
             BigDecimal newBalance;
+
+            if(txn.getTag().getName() != null)
+                t.setTag(tagService.getByName(txn.getTag().getName()));
 
             if (operation)
                newBalance = balance.add(amount);
